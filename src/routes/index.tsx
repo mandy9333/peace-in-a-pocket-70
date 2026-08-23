@@ -30,7 +30,7 @@ function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-32">
       <main className="mx-auto max-w-md px-6 pt-12">
         <header className="mb-8 flex items-end justify-between">
           <div>

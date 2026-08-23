@@ -18,7 +18,7 @@ export const Route = createFileRoute("/library")({
 
 function Library() {
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-32">
       <main className="mx-auto max-w-md px-6 pt-12">
         <header className="mb-8">
           <h1 className="text-3xl font-semibold tracking-tight text-foreground">
