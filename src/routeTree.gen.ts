@@ -10,33 +10,63 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LibraryRouteImport } from './routes/library'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PlayerIdRouteImport } from './routes/player.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LibraryRoute = LibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlayerIdRoute = PlayerIdRouteImport.update({
+  id: '/player/$id',
+  path: '/player/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/library': typeof LibraryRoute
+  '/profile': typeof ProfileRoute
+  '/player/$id': typeof PlayerIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/library': typeof LibraryRoute
+  '/profile': typeof ProfileRoute
+  '/player/$id': typeof PlayerIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/library': typeof LibraryRoute
+  '/profile': typeof ProfileRoute
+  '/player/$id': typeof PlayerIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/library' | '/profile' | '/player/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/library' | '/profile' | '/player/$id'
+  id: '__root__' | '/' | '/library' | '/profile' | '/player/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LibraryRoute: typeof LibraryRoute
+  ProfileRoute: typeof ProfileRoute
+  PlayerIdRoute: typeof PlayerIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +78,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/library': {
+      id: '/library'
+      path: '/library'
+      fullPath: '/library'
+      preLoaderRoute: typeof LibraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/player/$id': {
+      id: '/player/$id'
+      path: '/player/$id'
+      fullPath: '/player/$id'
+      preLoaderRoute: typeof PlayerIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LibraryRoute: LibraryRoute,
+  ProfileRoute: ProfileRoute,
+  PlayerIdRoute: PlayerIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
