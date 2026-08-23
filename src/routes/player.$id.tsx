@@ -23,7 +23,7 @@ export const Route = createFileRoute("/player/$id")({
 
 function Player() {
   const { id } = Route.useParams();
-  const session = getSessionById(id);
+  const session = getSessionById(id)!;
   const navigate = useNavigate();
   const { recordSession } = useMeditationStats();
 

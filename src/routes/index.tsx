@@ -19,7 +19,7 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const { stats } = useMeditationStats();
-  const daily = sessions[0];
+  const daily = sessions[0]!;
   const recent = sessions.slice(1, 4);
 
   const greeting = () => {
