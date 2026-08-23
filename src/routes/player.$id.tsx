@@ -6,7 +6,7 @@ import { ArrowLeft, Pause, Play, RotateCcw, Check } from "lucide-react";
 
 export const Route = createFileRoute("/player/$id")({
   head: ({ params }) => {
-    const session = getSessionById(params.id);
+    const session = getSessionById(params.id)!;
     return {
       meta: [
         { title: `${session.title} — Stillpoint` },
