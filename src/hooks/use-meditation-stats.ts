@@ -59,7 +59,7 @@ export const useMeditationStats = () => {
   }, [stats, hydrated]);
 
   const recordSession = useCallback((minutes: number) => {
-    const today = getToday();
+    const today: string = getToday() ?? null;
     const yesterday = getYesterday();
 
     setStats((prev) => {
