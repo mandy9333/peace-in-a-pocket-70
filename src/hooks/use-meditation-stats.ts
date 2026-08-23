@@ -10,12 +10,12 @@ export interface MeditationStats {
 
 const STORAGE_KEY = "meditation_stats_v1";
 
-const getToday = () => new Date().toISOString().split("T")[0];
+const getToday = () => new Date().toISOString().split("T")[0] as string;
 
 const getYesterday = () => {
   const d = new Date();
   d.setDate(d.getDate() - 1);
-  return d.toISOString().split("T")[0];
+  return d.toISOString().split("T")[0] as string;
 };
 
 const defaultStats: MeditationStats = {
