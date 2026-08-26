@@ -1,7 +1,12 @@
-import sessionMorning from "@/assets/session-morning.jpg";
-import sessionSleep from "@/assets/session-sleep.jpg";
-import sessionFocus from "@/assets/session-focus.jpg";
-import sessionCalm from "@/assets/session-calm.jpg";
+import sessionMorningAsset from "@/assets/session-morning.jpg.asset.json";
+import sessionSleepAsset from "@/assets/session-sleep.jpg.asset.json";
+import sessionFocusAsset from "@/assets/session-focus.jpg.asset.json";
+import sessionCalmAsset from "@/assets/session-calm.jpg.asset.json";
+
+const sessionMorning = sessionMorningAsset.url;
+const sessionSleep = sessionSleepAsset.url;
+const sessionFocus = sessionFocusAsset.url;
+const sessionCalm = sessionCalmAsset.url;
 
 export type MeditationCategory = "morning" | "sleep" | "focus" | "calm";
 
