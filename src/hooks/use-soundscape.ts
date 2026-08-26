@@ -24,6 +24,7 @@ export function useSoundscape(category: MeditationCategory) {
   const [volume, setVolume] = useState(0.5);
   const [muted, setMuted] = useState(false);
   const nodesRef = useRef<Nodes | null>(null);
+  const playingRef = useRef(false);
 
   // Load persisted preferences after mount (avoids SSR mismatch).
   useEffect(() => {
@@ -132,11 +133,13 @@ export function useSoundscape(category: MeditationCategory) {
       nodesRef.current = built;
     }
     const nodes = nodesRef.current;
+    playingRef.current = true;
     if (nodes.ctx.state === "suspended") await nodes.ctx.resume();
     fade(nodes.master, nodes.ctx, target, 2.5);
   }, [build, target]);
 
   const pause = useCallback(() => {
+    playingRef.current = false;
     const nodes = nodesRef.current;
     if (!nodes) return;
     fade(nodes.master, nodes.ctx, 0, 1.2);
@@ -146,6 +149,7 @@ export function useSoundscape(category: MeditationCategory) {
     const nodes = nodesRef.current;
     if (!nodes) return;
     nodesRef.current = null;
+    playingRef.current = false;
     nodes.stop();
     void nodes.ctx.close();
   }, []);
@@ -153,10 +157,8 @@ export function useSoundscape(category: MeditationCategory) {
   // Live-apply volume/mute while playing.
   useEffect(() => {
     const nodes = nodesRef.current;
-    if (!nodes || nodes.ctx.state !== "running") return;
-    if (nodes.master.gain.value > 0.0001 || target > 0) {
-      fade(nodes.master, nodes.ctx, target, 0.4);
-    }
+    if (!nodes || !playingRef.current) return;
+    fade(nodes.master, nodes.ctx, target, 0.4);
   }, [target]);
 
   useEffect(() => teardown, [teardown]);
