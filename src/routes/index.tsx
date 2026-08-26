@@ -22,8 +22,12 @@ function Home() {
   const daily = sessions[0]!;
   const recent = sessions.slice(1, 4);
 
+  const [now, setNow] = useState<Date | null>(null);
+  useEffect(() => setNow(new Date()), []);
+
   const greeting = () => {
-    const hour = new Date().getHours();
+    if (!now) return "Welcome back";
+    const hour = now.getHours();
     if (hour < 12) return "Good morning";
     if (hour < 18) return "Good afternoon";
     return "Good evening";
@@ -35,11 +39,13 @@ function Home() {
         <header className="mb-8 flex items-end justify-between">
           <div>
             <p className="text-sm text-muted-foreground">
-              {new Date().toLocaleDateString("en-US", {
-                weekday: "long",
-                month: "short",
-                day: "numeric",
-              })}
+              {now
+                ? now.toLocaleDateString("en-US", {
+                    weekday: "long",
+                    month: "short",
+                    day: "numeric",
+                  })
+                : "\u00a0"}
             </p>
             <h1 className="mt-1 text-3xl font-semibold tracking-tight text-foreground">
               {greeting()}
