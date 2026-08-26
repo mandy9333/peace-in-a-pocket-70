@@ -34,6 +34,14 @@ function Player() {
   const [isFinished, setIsFinished] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const hasRecorded = useRef(false);
+  const { volume, setVolume, muted, setMuted, start, pause } = useSoundscape(
+    session.category,
+  );
+
+  useEffect(() => {
+    if (isPlaying) void start();
+    else pause();
+  }, [isPlaying, start, pause]);
 
   useEffect(() => {
     if (isPlaying && elapsed < durationSeconds) {
