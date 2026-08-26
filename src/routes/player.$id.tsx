@@ -2,7 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { getSessionById, formatTime } from "@/lib/meditation";
 import { useMeditationStats } from "@/hooks/use-meditation-stats";
-import { ArrowLeft, Pause, Play, RotateCcw, Check } from "lucide-react";
+import { useSoundscape } from "@/hooks/use-soundscape";
+import { ArrowLeft, Pause, Play, RotateCcw, Check, Volume2, VolumeX } from "lucide-react";
 
 export const Route = createFileRoute("/player/$id")({
   head: ({ params }) => {
