@@ -164,6 +164,42 @@ function Player() {
             <Check className="size-5" />
           </Link>
         </div>
+
+        {/* Soundscape */}
+        <div className="mt-10 w-full max-w-xs rounded-2xl bg-card/80 p-4 ring-1 ring-border backdrop-blur">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {session.label} soundscape
+            </span>
+            <button
+              onClick={() => setMuted((m) => !m)}
+              className="flex size-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground"
+              aria-label={muted ? "Unmute music" : "Mute music"}
+              aria-pressed={muted}
+            >
+              {muted ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
+            </button>
+          </div>
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.01}
+            value={volume}
+            onChange={(e) => {
+              setVolume(Number(e.target.value));
+              if (muted) setMuted(false);
+            }}
+            aria-label="Music volume"
+            className="mt-3 h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted accent-primary disabled:opacity-40"
+            disabled={muted}
+            style={{
+              background: muted
+                ? undefined
+                : `linear-gradient(to right, var(--primary) ${volume * 100}%, var(--muted) ${volume * 100}%)`,
+            }}
+          />
+        </div>
       </main>
     </div>
   );
