@@ -18,8 +18,8 @@ export interface MeditationSession {
 export const sessions: MeditationSession[] = [
   {
     id: "morning-stillness",
-    title: "Morning Stillness",
-    description: "A ten-minute practice to anchor your attention for the day ahead.",
+    title: "10 Minutes of Recalibration",
+    description: "A ten-minute practice to reset your mind and recalibrate for the day ahead.",
     durationMinutes: 10,
     category: "morning",
     image: sessionMorning,
@@ -27,8 +27,8 @@ export const sessions: MeditationSession[] = [
   },
   {
     id: "deep-rest",
-    title: "Deep Rest",
-    description: "Release the day and settle into a quiet body for restful sleep.",
+    title: "De-stress Portal",
+    description: "Step through a guided doorway to release tension and settle into restful sleep.",
     durationMinutes: 20,
     category: "sleep",
     image: sessionSleep,
@@ -36,8 +36,8 @@ export const sessions: MeditationSession[] = [
   },
   {
     id: "center-point",
-    title: "Center Point",
-    description: "Sharpen focus with a guided breath and body-scan practice.",
+    title: "Balancing the Scales",
+    description: "A focused breath and body-scan practice to steady attention and restore equilibrium.",
     durationMinutes: 8,
     category: "focus",
     image: sessionFocus,
@@ -45,7 +45,7 @@ export const sessions: MeditationSession[] = [
   },
   {
     id: "quiet-garden",
-    title: "Quiet Garden",
+    title: "True Peace",
     description: "A gentle reset for anxious moments and scattered thoughts.",
     durationMinutes: 12,
     category: "calm",
