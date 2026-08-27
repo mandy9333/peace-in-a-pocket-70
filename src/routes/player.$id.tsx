@@ -114,7 +114,10 @@ function Player() {
     setIsFinished(false);
     setElapsed(0);
     hasRecorded.current = false;
+    spokenRef.current.clear();
+    voice.stop();
   };
+
 
   return (
     <div className="relative flex min-h-screen flex-col bg-background">
