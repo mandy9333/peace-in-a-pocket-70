@@ -49,11 +49,39 @@ function Player() {
   const { volume, setVolume, muted, setMuted, start, pause } = useSoundscape(
     session.category,
   );
+  const voice = useVoiceover();
+  const spokenRef = useRef<Set<number>>(new Set());
 
   useEffect(() => {
     if (isPlaying) void start();
     else pause();
   }, [isPlaying, start, pause]);
+
+  // Warm the first few narration clips once the session starts.
+  useEffect(() => {
+    if (!isPlaying) return;
+    voice.prefetch(session.voiceover.slice(0, 3).map((cue) => cue.text));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPlaying, session.id]);
+
+  // Speak guidance cues as their moment arrives.
+  useEffect(() => {
+    if (!isPlaying) return;
+    const cue = session.voiceover.find(
+      (c) => elapsed >= c.at && !spokenRef.current.has(c.at),
+    );
+    if (!cue) return;
+    spokenRef.current.add(cue.at);
+    void voice.speak(cue.text);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [elapsed, isPlaying, session.id]);
+
+  // Silence narration when paused.
+  useEffect(() => {
+    if (!isPlaying) voice.stop();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPlaying]);
+
 
   useEffect(() => {
     if (isPlaying && elapsed < durationSeconds) {
