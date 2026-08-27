@@ -3,7 +3,19 @@ import { useEffect, useRef, useState } from "react";
 import { getSessionById, formatTime } from "@/lib/meditation";
 import { useMeditationStats } from "@/hooks/use-meditation-stats";
 import { useSoundscape } from "@/hooks/use-soundscape";
-import { ArrowLeft, Pause, Play, RotateCcw, Check, Volume2, VolumeX } from "lucide-react";
+import { useVoiceover } from "@/hooks/use-voiceover";
+import {
+  ArrowLeft,
+  Pause,
+  Play,
+  RotateCcw,
+  Check,
+  Volume2,
+  VolumeX,
+  Mic,
+  MicOff,
+} from "lucide-react";
+
 
 export const Route = createFileRoute("/player/$id")({
   head: ({ params }) => {
