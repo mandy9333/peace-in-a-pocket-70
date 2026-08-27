@@ -10,6 +10,12 @@ const sessionCalm = sessionCalmAsset.url;
 
 export type MeditationCategory = "morning" | "sleep" | "focus" | "calm";
 
+/** A spoken guidance line, played at `at` seconds into the session. */
+export interface VoiceCue {
+  at: number;
+  text: string;
+}
+
 export interface MeditationSession {
   id: string;
   title: string;
@@ -18,7 +24,9 @@ export interface MeditationSession {
   category: MeditationCategory;
   image: string;
   label: string;
+  voiceover: VoiceCue[];
 }
+
 
 export const sessions: MeditationSession[] = [
   {
