@@ -64,6 +64,8 @@ function Home() {
           </div>
         </header>
 
+        <HowItWorks />
+
         {/* Daily session */}
         <section className="mb-10">
           <Link
