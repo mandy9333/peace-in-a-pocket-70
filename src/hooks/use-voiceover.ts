@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { getRecording } from "@/lib/voice-recordings";
 
 const STORAGE_KEY = "stillpoint.voice";
 
@@ -45,9 +46,23 @@ export function useVoiceover() {
     setIsSpeaking(false);
   }, []);
 
-  const fetchClip = useCallback(async (text: string) => {
-    const cached = cacheRef.current.get(text);
+  const fetchClip = useCallback(async (text: string, key?: string) => {
+    const cacheId = key ?? text;
+    const cached = cacheRef.current.get(cacheId);
     if (cached) return cached;
+    // Prefer the user's own recording for this cue when one exists.
+    if (key) {
+      try {
+        const own = await getRecording(key);
+        if (own) {
+          const ownUrl = URL.createObjectURL(own);
+          cacheRef.current.set(cacheId, ownUrl);
+          return ownUrl;
+        }
+      } catch {
+        /* fall back to generated narration */
+      }
+    }
     const res = await fetch("/api/tts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -64,16 +79,16 @@ export function useVoiceover() {
       throw new Error(message);
     }
     const url = URL.createObjectURL(await res.blob());
-    cacheRef.current.set(text, url);
+    cacheRef.current.set(cacheId, url);
     return url;
   }, []);
 
   const speak = useCallback(
-    async (text: string) => {
+    async (text: string, key?: string) => {
       if (!enabled || !text) return;
       try {
         setError(null);
-        const url = await fetchClip(text);
+        const url = await fetchClip(text, key);
         let audio = audioRef.current;
         if (!audio) {
           audio = new Audio();
@@ -94,12 +109,12 @@ export function useVoiceover() {
 
   /** Warm the cache so the first cue starts without a delay. */
   const prefetch = useCallback(
-    (texts: string[]) => {
+    (cues: { text: string; key?: string }[]) => {
       if (!enabled) return;
       void (async () => {
-        for (const text of texts) {
+        for (const cue of cues) {
           try {
-            await fetchClip(text);
+            await fetchClip(cue.text, cue.key);
           } catch {
             return;
           }
