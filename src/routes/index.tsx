@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useMeditationStats } from "@/hooks/use-meditation-stats";
 import { sessions, formatTime } from "@/lib/meditation";
 import { Flame, Play } from "lucide-react";
+import { HowItWorks } from "@/components/how-it-works";
 
 export const Route = createFileRoute("/")({
   head: () => ({
