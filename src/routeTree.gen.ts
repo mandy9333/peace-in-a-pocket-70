@@ -14,6 +14,7 @@ import { Route as LibraryRouteImport } from './routes/library'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ApiTtsRouteImport } from './routes/api/tts'
 import { Route as PlayerIdRouteImport } from './routes/player.$id'
+import { Route as RecordIdRouteImport } from './routes/record.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const PlayerIdRoute = PlayerIdRouteImport.update({
   path: '/player/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RecordIdRoute = RecordIdRouteImport.update({
+  id: '/record/$id',
+  path: '/record/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/api/tts': typeof ApiTtsRoute
   '/player/$id': typeof PlayerIdRoute
+  '/record/$id': typeof RecordIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/api/tts': typeof ApiTtsRoute
   '/player/$id': typeof PlayerIdRoute
+  '/record/$id': typeof RecordIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,22 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/api/tts': typeof ApiTtsRoute
   '/player/$id': typeof PlayerIdRoute
+  '/record/$id': typeof RecordIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/library' | '/profile' | '/api/tts' | '/player/$id'
+  fullPaths:
+    '/' | '/library' | '/profile' | '/api/tts' | '/player/$id' | '/record/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/library' | '/profile' | '/api/tts' | '/player/$id'
-  id: '__root__' | '/' | '/library' | '/profile' | '/api/tts' | '/player/$id'
+  to: '/' | '/library' | '/profile' | '/api/tts' | '/player/$id' | '/record/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/library'
+    | '/profile'
+    | '/api/tts'
+    | '/player/$id'
+    | '/record/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +94,7 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   ApiTtsRoute: typeof ApiTtsRoute
   PlayerIdRoute: typeof PlayerIdRoute
+  RecordIdRoute: typeof RecordIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +134,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayerIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/record/$id': {
+      id: '/record/$id'
+      path: '/record/$id'
+      fullPath: '/record/$id'
+      preLoaderRoute: typeof RecordIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +150,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   ApiTtsRoute: ApiTtsRoute,
   PlayerIdRoute: PlayerIdRoute,
+  RecordIdRoute: RecordIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

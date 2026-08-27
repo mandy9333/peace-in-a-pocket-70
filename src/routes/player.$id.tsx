@@ -4,6 +4,7 @@ import { getSessionById, formatTime } from "@/lib/meditation";
 import { useMeditationStats } from "@/hooks/use-meditation-stats";
 import { useSoundscape } from "@/hooks/use-soundscape";
 import { useVoiceover } from "@/hooks/use-voiceover";
+import { cueKey } from "@/lib/voice-recordings";
 import {
   ArrowLeft,
   Pause,
@@ -60,19 +61,25 @@ function Player() {
   // Warm the first few narration clips once the session starts.
   useEffect(() => {
     if (!isPlaying) return;
-    voice.prefetch(session.voiceover.slice(0, 3).map((cue) => cue.text));
+    voice.prefetch(
+      session.voiceover.slice(0, 3).map((cue, index) => ({
+        text: cue.text,
+        key: cueKey(session.id, index),
+      })),
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying, session.id]);
 
   // Speak guidance cues as their moment arrives.
   useEffect(() => {
     if (!isPlaying) return;
-    const cue = session.voiceover.find(
+    const index = session.voiceover.findIndex(
       (c) => elapsed >= c.at && !spokenRef.current.has(c.at),
     );
-    if (!cue) return;
+    if (index === -1) return;
+    const cue = session.voiceover[index]!;
     spokenRef.current.add(cue.at);
-    void voice.speak(cue.text);
+    void voice.speak(cue.text, cueKey(session.id, index));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elapsed, isPlaying, session.id]);
 
@@ -280,6 +287,14 @@ function Player() {
                 : `linear-gradient(to right, var(--primary) ${voice.volume * 100}%, var(--muted) ${voice.volume * 100}%)`,
             }}
           />
+          <button
+            onClick={() =>
+              navigate({ to: "/record/$id", params: { id: session.id } })
+            }
+            className="mt-3 w-full rounded-full bg-muted py-2 text-[12px] font-medium text-foreground transition-opacity hover:opacity-80"
+          >
+            Record in my own voice
+          </button>
           {voice.error ? (
             <p className="mt-2 text-[11px] text-destructive">{voice.error}</p>
           ) : null}
