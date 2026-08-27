@@ -3,7 +3,19 @@ import { useEffect, useRef, useState } from "react";
 import { getSessionById, formatTime } from "@/lib/meditation";
 import { useMeditationStats } from "@/hooks/use-meditation-stats";
 import { useSoundscape } from "@/hooks/use-soundscape";
-import { ArrowLeft, Pause, Play, RotateCcw, Check, Volume2, VolumeX } from "lucide-react";
+import { useVoiceover } from "@/hooks/use-voiceover";
+import {
+  ArrowLeft,
+  Pause,
+  Play,
+  RotateCcw,
+  Check,
+  Volume2,
+  VolumeX,
+  Mic,
+  MicOff,
+} from "lucide-react";
+
 
 export const Route = createFileRoute("/player/$id")({
   head: ({ params }) => {
@@ -37,11 +49,39 @@ function Player() {
   const { volume, setVolume, muted, setMuted, start, pause } = useSoundscape(
     session.category,
   );
+  const voice = useVoiceover();
+  const spokenRef = useRef<Set<number>>(new Set());
 
   useEffect(() => {
     if (isPlaying) void start();
     else pause();
   }, [isPlaying, start, pause]);
+
+  // Warm the first few narration clips once the session starts.
+  useEffect(() => {
+    if (!isPlaying) return;
+    voice.prefetch(session.voiceover.slice(0, 3).map((cue) => cue.text));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPlaying, session.id]);
+
+  // Speak guidance cues as their moment arrives.
+  useEffect(() => {
+    if (!isPlaying) return;
+    const cue = session.voiceover.find(
+      (c) => elapsed >= c.at && !spokenRef.current.has(c.at),
+    );
+    if (!cue) return;
+    spokenRef.current.add(cue.at);
+    void voice.speak(cue.text);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [elapsed, isPlaying, session.id]);
+
+  // Silence narration when paused.
+  useEffect(() => {
+    if (!isPlaying) voice.stop();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPlaying]);
+
 
   useEffect(() => {
     if (isPlaying && elapsed < durationSeconds) {
@@ -74,7 +114,10 @@ function Player() {
     setIsFinished(false);
     setElapsed(0);
     hasRecorded.current = false;
+    spokenRef.current.clear();
+    voice.stop();
   };
+
 
   return (
     <div className="relative flex min-h-screen flex-col bg-background">
@@ -200,6 +243,48 @@ function Player() {
             }}
           />
         </div>
+
+        {/* Voice guidance */}
+        <div className="mt-4 w-full max-w-xs rounded-2xl bg-card/80 p-4 ring-1 ring-border backdrop-blur">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Voice guidance
+              {voice.isSpeaking && voice.enabled ? " · speaking" : ""}
+            </span>
+            <button
+              onClick={() => {
+                const next = !voice.enabled;
+                voice.setEnabled(next);
+                if (!next) voice.stop();
+              }}
+              className="flex size-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground"
+              aria-label={voice.enabled ? "Turn off voice guidance" : "Turn on voice guidance"}
+              aria-pressed={voice.enabled}
+            >
+              {voice.enabled ? <Mic className="size-4" /> : <MicOff className="size-4" />}
+            </button>
+          </div>
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.01}
+            value={voice.volume}
+            onChange={(e) => voice.setVolume(Number(e.target.value))}
+            aria-label="Voice volume"
+            className="mt-3 h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted accent-primary disabled:opacity-40"
+            disabled={!voice.enabled}
+            style={{
+              background: !voice.enabled
+                ? undefined
+                : `linear-gradient(to right, var(--primary) ${voice.volume * 100}%, var(--muted) ${voice.volume * 100}%)`,
+            }}
+          />
+          {voice.error ? (
+            <p className="mt-2 text-[11px] text-destructive">{voice.error}</p>
+          ) : null}
+        </div>
+
       </main>
     </div>
   );
