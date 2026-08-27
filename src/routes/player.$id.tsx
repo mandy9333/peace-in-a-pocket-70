@@ -243,6 +243,48 @@ function Player() {
             }}
           />
         </div>
+
+        {/* Voice guidance */}
+        <div className="mt-4 w-full max-w-xs rounded-2xl bg-card/80 p-4 ring-1 ring-border backdrop-blur">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Voice guidance
+              {voice.isSpeaking && voice.enabled ? " · speaking" : ""}
+            </span>
+            <button
+              onClick={() => {
+                const next = !voice.enabled;
+                voice.setEnabled(next);
+                if (!next) voice.stop();
+              }}
+              className="flex size-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground"
+              aria-label={voice.enabled ? "Turn off voice guidance" : "Turn on voice guidance"}
+              aria-pressed={voice.enabled}
+            >
+              {voice.enabled ? <Mic className="size-4" /> : <MicOff className="size-4" />}
+            </button>
+          </div>
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.01}
+            value={voice.volume}
+            onChange={(e) => voice.setVolume(Number(e.target.value))}
+            aria-label="Voice volume"
+            className="mt-3 h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted accent-primary disabled:opacity-40"
+            disabled={!voice.enabled}
+            style={{
+              background: !voice.enabled
+                ? undefined
+                : `linear-gradient(to right, var(--primary) ${voice.volume * 100}%, var(--muted) ${voice.volume * 100}%)`,
+            }}
+          />
+          {voice.error ? (
+            <p className="mt-2 text-[11px] text-destructive">{voice.error}</p>
+          ) : null}
+        </div>
+
       </main>
     </div>
   );
