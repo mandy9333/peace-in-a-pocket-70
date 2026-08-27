@@ -1,8 +1,13 @@
-import { useState } from "react";
-import { PlayCircle, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Mic, PlayCircle, Square, Trash2, Volume2, X } from "lucide-react";
 import howItWorksAsset from "@/assets/how-it-works.mp4.asset.json";
+import { cueKey, getRecording } from "@/lib/voice-recordings";
+import { useVoiceRecorder } from "@/hooks/use-voice-recorder";
+
+const NARRATION_ID = "how-it-works";
 
 const steps = [
+  "Welcome to Stillpoint. Here is how it works.",
   "Pick a session from Home or the Library.",
   "Press play — the timer and breathing circle guide your pace.",
   "Adjust the soundscape and voice guidance volumes to taste.",
@@ -12,6 +17,74 @@ const steps = [
 
 export function HowItWorks() {
   const [open, setOpen] = useState(false);
+  const [narrating, setNarrating] = useState<number | null>(null);
+  const [narrationError, setNarrationError] = useState<string | null>(null);
+  const recorder = useVoiceRecorder(NARRATION_ID);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const urlsRef = useRef<string[]>([]);
+  const cancelRef = useRef(false);
+
+  useEffect(() => {
+    const urls = urlsRef.current;
+    return () => {
+      audioRef.current?.pause();
+      urls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, []);
+
+  const clipUrl = async (index: number) => {
+    const own = await getRecording(cueKey(NARRATION_ID, index));
+    if (own) {
+      const url = URL.createObjectURL(own);
+      urlsRef.current.push(url);
+      return url;
+    }
+    const res = await fetch("/api/tts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: steps[index] }),
+    });
+    if (!res.ok) throw new Error("Narration is unavailable right now.");
+    const url = URL.createObjectURL(await res.blob());
+    urlsRef.current.push(url);
+    return url;
+  };
+
+  const stopNarration = () => {
+    cancelRef.current = true;
+    audioRef.current?.pause();
+    setNarrating(null);
+  };
+
+  const playNarration = async () => {
+    cancelRef.current = false;
+    setNarrationError(null);
+    let audio = audioRef.current;
+    if (!audio) {
+      audio = new Audio();
+      audioRef.current = audio;
+    }
+    try {
+      for (let i = 0; i < steps.length; i++) {
+        if (cancelRef.current) break;
+        setNarrating(i);
+        const url = await clipUrl(i);
+        if (cancelRef.current) break;
+        audio.src = url;
+        await audio.play();
+        await new Promise<void>((resolve) => {
+          audio!.onended = () => resolve();
+          audio!.onpause = () => resolve();
+        });
+      }
+    } catch (err) {
+      setNarrationError(
+        err instanceof Error ? err.message : "Narration failed.",
+      );
+    } finally {
+      setNarrating(null);
+    }
+  };
 
   return (
     <section className="mb-10">
@@ -51,10 +124,14 @@ export function HowItWorks() {
           role="dialog"
           aria-modal="true"
           aria-label="How Stillpoint works"
-          onClick={() => setOpen(false)}
+          onClick={() => {
+            stopNarration();
+            recorder.stopPlayback();
+            setOpen(false);
+          }}
         >
           <div
-            className="w-full max-w-md overflow-hidden rounded-3xl bg-card ring-1 ring-border"
+            className="max-h-[88vh] w-full max-w-md overflow-y-auto rounded-3xl bg-card ring-1 ring-border"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative">
@@ -62,25 +139,122 @@ export function HowItWorks() {
                 src={howItWorksAsset.url}
                 controls
                 autoPlay
+                muted
                 playsInline
                 className="aspect-video w-full bg-black object-cover"
               />
               <button
                 type="button"
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  stopNarration();
+                  setOpen(false);
+                }}
                 aria-label="Close video"
                 className="absolute right-3 top-3 flex size-9 items-center justify-center rounded-full bg-black/60 text-white"
               >
                 <X className="size-4" />
               </button>
             </div>
-            <ol className="space-y-3 p-6">
+
+            <div className="border-b border-border p-5">
+              <button
+                type="button"
+                onClick={() =>
+                  narrating === null ? void playNarration() : stopNarration()
+                }
+                className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+              >
+                {narrating === null ? (
+                  <>
+                    <Volume2 className="size-4" /> Play voice over
+                  </>
+                ) : (
+                  <>
+                    <Square className="size-4 fill-current" /> Stop narration
+                  </>
+                )}
+              </button>
+              <p className="mt-2 text-center text-[11px] text-muted-foreground">
+                {recorder.recordedCount > 0
+                  ? `${recorder.recordedCount} of ${steps.length} lines in your own voice.`
+                  : "Tap the mic on any line to narrate it in your own voice."}
+              </p>
+              {narrationError ? (
+                <p className="mt-2 text-center text-[11px] text-destructive">
+                  {narrationError}
+                </p>
+              ) : null}
+              {recorder.error ? (
+                <p className="mt-2 text-center text-[11px] text-destructive">
+                  {recorder.error}
+                </p>
+              ) : null}
+            </div>
+
+            <ol className="space-y-4 p-6">
               {steps.map((step, i) => (
-                <li key={i} className="flex gap-3 text-sm text-foreground">
-                  <span className="flex size-6 flex-shrink-0 items-center justify-center rounded-full bg-secondary text-[11px] font-semibold text-primary">
-                    {i + 1}
+                <li key={i} className="flex gap-3">
+                  <span
+                    className={`flex size-6 flex-shrink-0 items-center justify-center rounded-full text-[11px] font-semibold ${
+                      narrating === i
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-secondary text-primary"
+                    }`}
+                  >
+                    {i === 0 ? "•" : i}
                   </span>
-                  <span className="text-muted-foreground">{step}</span>
+                  <div className="flex-1">
+                    <p className="text-sm text-muted-foreground">{step}</p>
+                    <div className="mt-2 flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          recorder.recordingIndex === i
+                            ? recorder.stopRecording()
+                            : void recorder.startRecording(i)
+                        }
+                        className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-medium transition-colors ${
+                          recorder.recordingIndex === i
+                            ? "bg-destructive text-white"
+                            : "bg-muted text-foreground"
+                        }`}
+                      >
+                        {recorder.recordingIndex === i ? (
+                          <>
+                            <Square className="size-3 fill-current" /> Stop
+                          </>
+                        ) : (
+                          <>
+                            <Mic className="size-3" />
+                            {recorder.has(i) ? "Re-record" : "Record"}
+                          </>
+                        )}
+                      </button>
+                      {recorder.has(i) ? (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              recorder.playingIndex === i
+                                ? recorder.stopPlayback()
+                                : void recorder.play(i)
+                            }
+                            className="rounded-full bg-muted px-3 py-1 text-[11px] font-medium text-foreground"
+                          >
+                            {recorder.playingIndex === i ? "Stop" : "Preview"}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => void recorder.remove(i)}
+                            aria-label="Delete recording"
+                            className="flex size-7 items-center justify-center rounded-full text-muted-foreground hover:text-destructive"
+                          >
+                            <Trash2 className="size-3.5" />
+                          </button>
+                        </>
+                      ) : null}
+                    </div>
+                  </div>
                 </li>
               ))}
             </ol>
