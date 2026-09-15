@@ -12,22 +12,6 @@ function isEntitled(status: string, periodEnd: string | null) {
     || (status === "canceled" && periodEnd !== null && inPeriod);
 }
 
-export const resolvePaddlePrice = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ priceId: planSchema, environment: environmentSchema }).parse(data))
-  .handler(async ({ data }) => {
-    const { gatewayFetch } = await import("@/lib/paddle.server");
-    const response = await gatewayFetch(
-      data.environment,
-      `/prices?external_id=${encodeURIComponent(data.priceId)}`,
-    );
-    const result = (await response.json()) as { data?: Array<{ id: string }> };
-    if (!result.data?.length) throw new Error("Price not found");
-    const price = result.data[0];
-    if (!price) throw new Error("Price not found");
-    return price.id;
-  });
-
 /** Creates a checkout transaction whose buyer identity is set by the authenticated server. */
 export const createCheckoutTransaction = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
