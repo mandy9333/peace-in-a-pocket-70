@@ -115,6 +115,7 @@ export function HowItWorks() {
             .play()
             .then(() => audioRef.current?.pause())
             .catch(() => {});
+          cancelRef.current = false;
           setOpen(true);
         }}
         className="group relative block w-full overflow-hidden rounded-3xl bg-card text-left ring-1 ring-border"
