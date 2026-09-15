@@ -46,6 +46,12 @@ function MemberArea() {
           >
             See plans
           </Link>
+          <p className="mt-4 text-xs text-muted-foreground">
+            Already paid?{" "}
+            <Link to="/account" className="font-semibold text-primary underline">
+              Refresh your membership
+            </Link>
+          </p>
         </div>
       </div>
     );
