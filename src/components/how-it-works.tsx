@@ -24,6 +24,7 @@ export function HowItWorks() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const urlsRef = useRef<string[]>([]);
   const cancelRef = useRef(false);
+  const runningRef = useRef(false);
 
   useEffect(() => {
     const urls = urlsRef.current;
@@ -34,6 +35,7 @@ export function HowItWorks() {
   }, []);
 
   const clipUrl = async (index: number) => {
+    // Always read the newest saved recording so a line just recorded is used.
     const own = await getRecording(cueKey(NARRATION_ID, index));
     if (own) {
       const url = URL.createObjectURL(own);
@@ -53,11 +55,14 @@ export function HowItWorks() {
 
   const stopNarration = () => {
     cancelRef.current = true;
+    runningRef.current = false;
     audioRef.current?.pause();
     setNarrating(null);
   };
 
   const playNarration = async () => {
+    if (runningRef.current) return;
+    runningRef.current = true;
     cancelRef.current = false;
     setNarrationError(null);
     let audio = audioRef.current;
@@ -87,8 +92,16 @@ export function HowItWorks() {
         err instanceof Error ? err.message : "Narration failed.",
       );
     } finally {
+      runningRef.current = false;
       setNarrating(null);
     }
+  };
+
+  /** Restart narration from the top so newly recorded lines are heard. */
+  const restartNarration = () => {
+    stopNarration();
+    cancelRef.current = false;
+    setTimeout(() => void playNarration(), 60);
   };
 
   return (
@@ -102,6 +115,7 @@ export function HowItWorks() {
             .play()
             .then(() => audioRef.current?.pause())
             .catch(() => {});
+          cancelRef.current = false;
           setOpen(true);
         }}
         className="group relative block w-full overflow-hidden rounded-3xl bg-card text-left ring-1 ring-border"
@@ -157,10 +171,10 @@ export function HowItWorks() {
                 loop
                 playsInline
                 onPlay={() => {
-                  if (narrating === null && !cancelRef.current) {
-                    void playNarration();
-                  } else {
+                  if (runningRef.current) {
                     void audioRef.current?.play().catch(() => {});
+                  } else {
+                    void playNarration();
                   }
                 }}
                 onPause={() => audioRef.current?.pause()}
@@ -232,11 +246,16 @@ export function HowItWorks() {
                     <div className="mt-2 flex items-center gap-2">
                       <button
                         type="button"
-                        onClick={() =>
-                          recorder.recordingIndex === i
-                            ? recorder.stopRecording()
-                            : void recorder.startRecording(i)
-                        }
+                        onClick={() => {
+                          if (recorder.recordingIndex === i) {
+                            recorder.stopRecording();
+                            // Give the clip a moment to save, then play it back in place.
+                            setTimeout(restartNarration, 700);
+                          } else {
+                            stopNarration();
+                            void recorder.startRecording(i);
+                          }
+                        }}
                         className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-medium transition-colors ${
                           recorder.recordingIndex === i
                             ? "bg-destructive text-white"
