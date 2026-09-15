@@ -28,7 +28,7 @@ function Home() {
   const [now, setNow] = useState<Date | null>(null);
   useEffect(() => setNow(new Date()), []);
 
-  const weekly = getWeeklySession(now ?? new Date(0));
+  const weekly = now ? getWeeklySession(now) : null;
   const moonSession = now ? getMoonSession(now) : null;
 
   const greeting = () => {
