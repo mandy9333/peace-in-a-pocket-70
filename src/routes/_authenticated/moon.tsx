@@ -16,7 +16,7 @@ import {
 } from "@/lib/moon";
 import { Moon, Mic, Play, Sparkles, CalendarDays } from "lucide-react";
 
-export const Route = createFileRoute("/moon")({
+export const Route = createFileRoute("/_authenticated/moon")({
   head: () => ({
     meta: [
       { title: "Moon Rituals & Weekly Practices — Stillpoint" },

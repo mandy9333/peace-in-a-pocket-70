@@ -9,31 +9,31 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as LibraryRouteImport } from './routes/library'
-import { Route as MoonRouteImport } from './routes/moon'
-import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
+import { Route as AuthenticatedMoonRouteImport } from './routes/_authenticated/moon'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as ApiTtsRouteImport } from './routes/api/tts'
-import { Route as PlayerIdRouteImport } from './routes/player.$id'
-import { Route as RecordIdRouteImport } from './routes/record.$id'
+import { Route as AuthenticatedPlayerIdRouteImport } from './routes/_authenticated/player.$id'
+import { Route as AuthenticatedRecordIdRouteImport } from './routes/_authenticated/record.$id'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+  id: '/_authenticated/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LibraryRoute = LibraryRouteImport.update({
-  id: '/library',
+const AuthenticatedLibraryRoute = AuthenticatedLibraryRouteImport.update({
+  id: '/_authenticated/library',
   path: '/library',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MoonRoute = MoonRouteImport.update({
-  id: '/moon',
+const AuthenticatedMoonRoute = AuthenticatedMoonRouteImport.update({
+  id: '/_authenticated/moon',
   path: '/moon',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/_authenticated/profile',
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
@@ -42,113 +42,113 @@ const ApiTtsRoute = ApiTtsRouteImport.update({
   path: '/api/tts',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PlayerIdRoute = PlayerIdRouteImport.update({
-  id: '/player/$id',
+const AuthenticatedPlayerIdRoute = AuthenticatedPlayerIdRouteImport.update({
+  id: '/_authenticated/player/$id',
   path: '/player/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RecordIdRoute = RecordIdRouteImport.update({
-  id: '/record/$id',
+const AuthenticatedRecordIdRoute = AuthenticatedRecordIdRouteImport.update({
+  id: '/_authenticated/record/$id',
   path: '/record/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/library': typeof LibraryRoute
-  '/moon': typeof MoonRoute
-  '/profile': typeof ProfileRoute
+  '/library': typeof AuthenticatedLibraryRoute
+  '/moon': typeof AuthenticatedMoonRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/api/tts': typeof ApiTtsRoute
-  '/player/$id': typeof PlayerIdRoute
-  '/record/$id': typeof RecordIdRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/player/$id': typeof AuthenticatedPlayerIdRoute
+  '/record/$id': typeof AuthenticatedRecordIdRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/library': typeof LibraryRoute
-  '/moon': typeof MoonRoute
-  '/profile': typeof ProfileRoute
+  '/library': typeof AuthenticatedLibraryRoute
+  '/moon': typeof AuthenticatedMoonRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/api/tts': typeof ApiTtsRoute
-  '/player/$id': typeof PlayerIdRoute
-  '/record/$id': typeof RecordIdRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/player/$id': typeof AuthenticatedPlayerIdRoute
+  '/record/$id': typeof AuthenticatedRecordIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/library': typeof LibraryRoute
-  '/moon': typeof MoonRoute
-  '/profile': typeof ProfileRoute
+  '/_authenticated/library': typeof AuthenticatedLibraryRoute
+  '/_authenticated/moon': typeof AuthenticatedMoonRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/api/tts': typeof ApiTtsRoute
-  '/player/$id': typeof PlayerIdRoute
-  '/record/$id': typeof RecordIdRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/player/$id': typeof AuthenticatedPlayerIdRoute
+  '/_authenticated/record/$id': typeof AuthenticatedRecordIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/library'
     | '/moon'
     | '/profile'
     | '/api/tts'
+    | '/'
     | '/player/$id'
     | '/record/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/library'
     | '/moon'
     | '/profile'
     | '/api/tts'
+    | '/'
     | '/player/$id'
     | '/record/$id'
   id:
     | '__root__'
-    | '/'
-    | '/library'
-    | '/moon'
-    | '/profile'
+    | '/_authenticated/library'
+    | '/_authenticated/moon'
+    | '/_authenticated/profile'
     | '/api/tts'
-    | '/player/$id'
-    | '/record/$id'
+    | '/_authenticated/'
+    | '/_authenticated/player/$id'
+    | '/_authenticated/record/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  LibraryRoute: typeof LibraryRoute
-  MoonRoute: typeof MoonRoute
-  ProfileRoute: typeof ProfileRoute
+  AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute
+  AuthenticatedMoonRoute: typeof AuthenticatedMoonRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   ApiTtsRoute: typeof ApiTtsRoute
-  PlayerIdRoute: typeof PlayerIdRoute
-  RecordIdRoute: typeof RecordIdRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedPlayerIdRoute: typeof AuthenticatedPlayerIdRoute
+  AuthenticatedRecordIdRoute: typeof AuthenticatedRecordIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_authenticated/': {
+      id: '/_authenticated/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/library': {
-      id: '/library'
+    '/_authenticated/library': {
+      id: '/_authenticated/library'
       path: '/library'
       fullPath: '/library'
-      preLoaderRoute: typeof LibraryRouteImport
+      preLoaderRoute: typeof AuthenticatedLibraryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/moon': {
-      id: '/moon'
+    '/_authenticated/moon': {
+      id: '/_authenticated/moon'
       path: '/moon'
       fullPath: '/moon'
-      preLoaderRoute: typeof MoonRouteImport
+      preLoaderRoute: typeof AuthenticatedMoonRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/profile': {
-      id: '/profile'
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
       path: '/profile'
       fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/tts': {
@@ -158,31 +158,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiTtsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/player/$id': {
-      id: '/player/$id'
+    '/_authenticated/player/$id': {
+      id: '/_authenticated/player/$id'
       path: '/player/$id'
       fullPath: '/player/$id'
-      preLoaderRoute: typeof PlayerIdRouteImport
+      preLoaderRoute: typeof AuthenticatedPlayerIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/record/$id': {
-      id: '/record/$id'
+    '/_authenticated/record/$id': {
+      id: '/_authenticated/record/$id'
       path: '/record/$id'
       fullPath: '/record/$id'
-      preLoaderRoute: typeof RecordIdRouteImport
+      preLoaderRoute: typeof AuthenticatedRecordIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  LibraryRoute: LibraryRoute,
-  MoonRoute: MoonRoute,
-  ProfileRoute: ProfileRoute,
+  AuthenticatedLibraryRoute: AuthenticatedLibraryRoute,
+  AuthenticatedMoonRoute: AuthenticatedMoonRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   ApiTtsRoute: ApiTtsRoute,
-  PlayerIdRoute: PlayerIdRoute,
-  RecordIdRoute: RecordIdRoute,
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedPlayerIdRoute: AuthenticatedPlayerIdRoute,
+  AuthenticatedRecordIdRoute: AuthenticatedRecordIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

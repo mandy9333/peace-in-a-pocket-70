@@ -3,7 +3,7 @@ import { getSessionById, formatTime } from "@/lib/meditation";
 import { useVoiceRecorder } from "@/hooks/use-voice-recorder";
 import { ArrowLeft, Mic, Square, Play, Pause, Trash2, Check } from "lucide-react";
 
-export const Route = createFileRoute("/record/$id")({
+export const Route = createFileRoute("/_authenticated/record/$id")({
   head: ({ params }) => {
     const session = getSessionById(params.id)!;
     return {

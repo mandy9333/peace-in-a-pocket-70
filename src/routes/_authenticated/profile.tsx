@@ -3,7 +3,7 @@ import { useMeditationStats } from "@/hooks/use-meditation-stats";
 import { Calendar, Clock, Flame, Award } from "lucide-react";
 import profileBg from "@/assets/profile-bg.jpg";
 
-export const Route = createFileRoute("/profile")({
+export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({
     meta: [
       { title: "Profile — Stillpoint" },
