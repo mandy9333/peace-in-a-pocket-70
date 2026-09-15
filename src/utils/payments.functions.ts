@@ -103,7 +103,7 @@ export const deleteMyAccount = createServerFn({ method: "POST" })
     const { data: subscriptions, error } = await context.supabase
       .from("subscriptions")
       .select("status, current_period_end, cancel_at_period_end")
-      .eq("user_id", context.userId);
+      .eq("user_id", context.userId)
       .eq("environment", environment);
     if (error) throw error;
 

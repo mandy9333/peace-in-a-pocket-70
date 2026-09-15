@@ -22,8 +22,8 @@ export const Route = createFileRoute("/api/tts")({
           global: { headers: { Authorization: `Bearer ${token}` } },
           auth: { persistSession: false, autoRefreshToken: false },
         });
-        const { data: claims, error: authError } = await supabase.auth.getClaims(token);
-        const userId = claims?.claims?.sub;
+        const { data: userData, error: authError } = await supabase.auth.getUser(token);
+        const userId = userData.user?.id;
         if (authError || !userId) {
           return Response.json({ error: "Sign in is required." }, { status: 401 });
         }

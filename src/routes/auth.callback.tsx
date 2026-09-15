@@ -28,15 +28,25 @@ function AuthCallback() {
 
   useEffect(() => {
     let active = true;
-    void supabase.auth.getUser().then(({ data }) => {
-      if (!active) return;
-      if (data.user) {
-        window.location.replace(safeStoredPath());
-      } else {
-        void navigate({ to: "/auth", search: { next: "/home" }, replace: true });
-      }
+    let settled = false;
+    const finish = (signedIn: boolean) => {
+      if (!active || settled) return;
+      settled = true;
+      if (signedIn) window.location.replace(safeStoredPath());
+      else void navigate({ to: "/auth", search: { next: "/home" }, replace: true });
+    };
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session?.user) finish(true);
     });
-    return () => { active = false; };
+    const timer = window.setTimeout(() => void supabase.auth.getUser().then(({ data }) => {
+      if (!active) return;
+      finish(Boolean(data.user));
+    }), 500);
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+      listener.subscription.unsubscribe();
+    };
   }, [navigate]);
 
   return <div className="flex min-h-screen items-center justify-center bg-background text-sm text-muted-foreground">Completing sign in…</div>;

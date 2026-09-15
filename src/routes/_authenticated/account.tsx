@@ -5,8 +5,11 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useSubscription } from "@/hooks/use-subscription";
-import { createPortalSession } from "@/utils/payments.functions";
-import { deleteMyAccount } from "@/utils/payments.functions";
+import {
+  createPortalSession,
+  deleteMyAccount,
+  refreshMySubscription,
+} from "@/utils/payments.functions";
 import { PLANS } from "@/lib/paddle";
 import { clearAllRecordings } from "@/lib/voice-recordings";
 import { Button } from "@/components/ui/button";
@@ -21,7 +24,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { CreditCard, LogOut, ExternalLink, Trash2 } from "lucide-react";
+import { CreditCard, LogOut, ExternalLink, Trash2, RefreshCw } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/account")({
   head: () => ({
@@ -41,9 +44,10 @@ export const Route = createFileRoute("/_authenticated/account")({
 });
 
 function AccountPage() {
-  const { user, subscription } = useSubscription();
+  const { user, subscription, refresh } = useSubscription();
   const openPortal = useServerFn(createPortalSession);
   const removeAccount = useServerFn(deleteMyAccount);
+  const refreshMembership = useServerFn(refreshMySubscription);
   const [busy, setBusy] = useState(false);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -98,6 +102,19 @@ function AccountPage() {
     }
   }
 
+  async function handleRefreshMembership() {
+    setBusy(true);
+    try {
+      await refreshMembership({});
+      await refresh();
+      toast.success("Your membership status is up to date.");
+    } catch {
+      toast.error("We couldn't refresh your membership. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background pb-32">
       <main className="mx-auto max-w-md px-6 pt-12">
@@ -140,6 +157,15 @@ function AccountPage() {
             Opens a secure billing page from Paddle, our Merchant of Record, where you can update
             your card, download invoices or cancel.
           </p>
+          <Button
+            type="button"
+            variant="ghost"
+            disabled={busy || !subscription}
+            onClick={() => void handleRefreshMembership()}
+            className="mt-2 w-full text-muted-foreground"
+          >
+            <RefreshCw className="size-4" /> Refresh membership status
+          </Button>
         </section>
 
         <section className="mt-6 border-t border-border pt-6">
