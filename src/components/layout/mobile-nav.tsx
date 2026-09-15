@@ -2,17 +2,20 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { Home, Library, Moon, User } from "lucide-react";
 
 const navItems = [
-  { to: "/", label: "Home", icon: Home },
+  { to: "/home", label: "Home", icon: Home },
   { to: "/library", label: "Library", icon: Library },
   { to: "/moon", label: "Rituals", icon: Moon },
   { to: "/profile", label: "Profile", icon: User },
-];
+] as const;
+
+const memberPaths = ["/home", "/library", "/moon", "/profile", "/account", "/record"];
 
 export function MobileNav() {
   const location = useLocation();
   const isPlayer = location.pathname.startsWith("/player");
+  const inMemberArea = memberPaths.some((p) => location.pathname.startsWith(p));
 
-  if (isPlayer) return null;
+  if (isPlayer || !inMemberArea) return null;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background/90 backdrop-blur-xl pb-safe">
