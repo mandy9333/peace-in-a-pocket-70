@@ -17,6 +17,13 @@
 - [ ] Review catalog / auth / payment / entitlement / renewal setup and report gaps
 - [ ] Give preview test plan incl. test card numbers
 
+## Seller policy pages (readiness check, seller = "Mandy's Meditation Space")
+- [ ] Public /pricing page
+- [ ] /terms (incl. Paddle merchant-of-record disclosure)
+- [ ] /refunds (30-day money-back)
+- [ ] /privacy
+- [ ] Footer links to all four on public pages
+
 ## Later
 - [ ] Go live: legal pages (terms, refund, privacy) + identity verification
 - [ ] Moon session photos awaiting user uploads
