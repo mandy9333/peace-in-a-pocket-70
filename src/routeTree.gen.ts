@@ -16,6 +16,7 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as ApiTtsRouteImport } from './routes/api/tts'
 import { Route as AuthenticatedPlayerIdRouteImport } from './routes/_authenticated/player.$id'
 import { Route as AuthenticatedRecordIdRouteImport } from './routes/_authenticated/record.$id'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
   id: '/_authenticated/home',
@@ -52,6 +53,12 @@ const AuthenticatedRecordIdRoute = AuthenticatedRecordIdRouteImport.update({
   path: '/record/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/home': typeof AuthenticatedHomeRoute
@@ -61,6 +68,7 @@ export interface FileRoutesByFullPath {
   '/api/tts': typeof ApiTtsRoute
   '/player/$id': typeof AuthenticatedPlayerIdRoute
   '/record/$id': typeof AuthenticatedRecordIdRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/home': typeof AuthenticatedHomeRoute
@@ -70,6 +78,7 @@ export interface FileRoutesByTo {
   '/api/tts': typeof ApiTtsRoute
   '/player/$id': typeof AuthenticatedPlayerIdRoute
   '/record/$id': typeof AuthenticatedRecordIdRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +89,7 @@ export interface FileRoutesById {
   '/api/tts': typeof ApiTtsRoute
   '/_authenticated/player/$id': typeof AuthenticatedPlayerIdRoute
   '/_authenticated/record/$id': typeof AuthenticatedRecordIdRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +101,7 @@ export interface FileRouteTypes {
     | '/api/tts'
     | '/player/$id'
     | '/record/$id'
+    | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/home'
@@ -100,6 +111,7 @@ export interface FileRouteTypes {
     | '/api/tts'
     | '/player/$id'
     | '/record/$id'
+    | '/api/public/payments/webhook'
   id:
     | '__root__'
     | '/_authenticated/home'
@@ -109,6 +121,7 @@ export interface FileRouteTypes {
     | '/api/tts'
     | '/_authenticated/player/$id'
     | '/_authenticated/record/$id'
+    | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,6 +132,7 @@ export interface RootRouteChildren {
   ApiTtsRoute: typeof ApiTtsRoute
   AuthenticatedPlayerIdRoute: typeof AuthenticatedPlayerIdRoute
   AuthenticatedRecordIdRoute: typeof AuthenticatedRecordIdRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -172,6 +186,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRecordIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -183,6 +204,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiTtsRoute: ApiTtsRoute,
   AuthenticatedPlayerIdRoute: AuthenticatedPlayerIdRoute,
   AuthenticatedRecordIdRoute: AuthenticatedRecordIdRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
