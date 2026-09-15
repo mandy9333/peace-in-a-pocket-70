@@ -3,6 +3,8 @@ import { Mic, PlayCircle, Square, Trash2, Volume2, X } from "lucide-react";
 import howItWorksAsset from "@/assets/how-it-works.mp4.asset.json";
 import { cueKey, getRecording } from "@/lib/voice-recordings";
 import { useVoiceRecorder } from "@/hooks/use-voice-recorder";
+import { supabase } from "@/integrations/supabase/client";
+import { getPaddleEnvironment } from "@/lib/paddle";
 
 const NARRATION_ID = "how-it-works";
 
@@ -42,9 +44,16 @@ export function HowItWorks() {
       urlsRef.current.push(url);
       return url;
     }
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    if (!token) throw new Error("Sign in is required for narration.");
     const res = await fetch("/api/tts", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        "X-Payments-Environment": getPaddleEnvironment(),
+      },
       body: JSON.stringify({ text: steps[index] }),
     });
     if (!res.ok) throw new Error("Narration is unavailable right now.");

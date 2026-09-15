@@ -42,11 +42,12 @@ export function useSubscription() {
       .select("id, status, price_id, product_id, current_period_end, cancel_at_period_end")
       .eq("user_id", currentUser.id)
       .eq("environment", getPaddleEnvironment())
+      .in("status", ["active", "trialing", "past_due", "canceled"])
       .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
+      .limit(10);
 
-    setSubscription((data as SubscriptionRow | null) ?? null);
+    const rows = (data as SubscriptionRow[] | null) ?? [];
+    setSubscription(rows.find(computeActive) ?? rows[0] ?? null);
     setLoading(false);
   }, []);
 

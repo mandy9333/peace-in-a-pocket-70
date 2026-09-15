@@ -19,22 +19,22 @@ async function handleSubscriptionCreated(data: any, env: PaddleEnv) {
 
   const userId = customData?.userId;
   if (!userId) {
-    console.error("No userId in customData");
-    return;
+    throw new Error("No userId in customData");
   }
 
   const item = items[0];
   const priceId = item.price?.importMeta?.externalId;
   const productId = item.product?.importMeta?.externalId;
   if (!priceId || !productId) {
-    console.warn("Skipping subscription: missing importMeta.externalId", {
-      rawPriceId: item.price?.id,
-      rawProductId: item.product?.id,
-    });
-    return;
+    throw new Error("Subscription product or price is missing its external ID");
   }
 
-  await getSupabase()
+  if (!["stillpoint_monthly", "stillpoint_yearly"].includes(priceId)
+    || productId !== "stillpoint_membership") {
+    throw new Error("Unsupported membership product or price");
+  }
+
+  const { error } = await getSupabase()
     .from("subscriptions")
     .upsert(
       {
@@ -51,12 +51,13 @@ async function handleSubscriptionCreated(data: any, env: PaddleEnv) {
       },
       { onConflict: "paddle_subscription_id" },
     );
+  if (error) throw error;
 }
 
 async function handleSubscriptionUpdated(data: any, env: PaddleEnv) {
   const { id, status, currentBillingPeriod, scheduledChange } = data;
 
-  await getSupabase()
+  const { error } = await getSupabase()
     .from("subscriptions")
     .update({
       status,
@@ -67,14 +68,16 @@ async function handleSubscriptionUpdated(data: any, env: PaddleEnv) {
     })
     .eq("paddle_subscription_id", id)
     .eq("environment", env);
+  if (error) throw error;
 }
 
 async function handleSubscriptionCanceled(data: any, env: PaddleEnv) {
-  await getSupabase()
+  const { error } = await getSupabase()
     .from("subscriptions")
     .update({ status: "canceled", updated_at: new Date().toISOString() })
     .eq("paddle_subscription_id", data.id)
     .eq("environment", env);
+  if (error) throw error;
 }
 
 async function handleWebhook(req: Request, env: PaddleEnv) {
@@ -100,7 +103,11 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
     handlers: {
       POST: async ({ request }) => {
         const url = new URL(request.url);
-        const env = (url.searchParams.get("env") || "sandbox") as PaddleEnv;
+        const rawEnv = url.searchParams.get("env");
+        if (rawEnv !== "sandbox" && rawEnv !== "live") {
+          return new Response("Invalid environment", { status: 400 });
+        }
+        const env = rawEnv as PaddleEnv;
         try {
           await handleWebhook(request, env);
           return Response.json({ received: true });

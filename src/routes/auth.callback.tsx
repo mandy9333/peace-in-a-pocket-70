@@ -30,11 +30,11 @@ function AuthCallback() {
     let active = true;
     void supabase.auth.getUser().then(({ data }) => {
       if (!active) return;
-      void navigate({
-        to: data.user ? safeStoredPath() : "/auth",
-        search: data.user ? undefined : { next: "/home" },
-        replace: true,
-      });
+      if (data.user) {
+        window.location.replace(safeStoredPath());
+      } else {
+        void navigate({ to: "/auth", search: { next: "/home" }, replace: true });
+      }
     });
     return () => { active = false; };
   }, [navigate]);
