@@ -246,11 +246,16 @@ export function HowItWorks() {
                     <div className="mt-2 flex items-center gap-2">
                       <button
                         type="button"
-                        onClick={() =>
-                          recorder.recordingIndex === i
-                            ? recorder.stopRecording()
-                            : void recorder.startRecording(i)
-                        }
+                        onClick={() => {
+                          if (recorder.recordingIndex === i) {
+                            recorder.stopRecording();
+                            // Give the clip a moment to save, then play it back in place.
+                            setTimeout(restartNarration, 700);
+                          } else {
+                            stopNarration();
+                            void recorder.startRecording(i);
+                          }
+                        }}
                         className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-medium transition-colors ${
                           recorder.recordingIndex === i
                             ? "bg-destructive text-white"
