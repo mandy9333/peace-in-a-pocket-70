@@ -29,6 +29,10 @@
 - [x] /privacy
 - [x] Footer links to all four on public pages
 
+## Contact page
+- [x] Public /contact with question form (name, email, message) → contact_messages table
+- [x] Linked from Account page support section + site footer
+
 ## Later
 - [ ] Go live: legal pages (terms, refund, privacy) + identity verification
 - [ ] Moon session photos awaiting user uploads
