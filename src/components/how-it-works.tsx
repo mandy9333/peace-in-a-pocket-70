@@ -171,10 +171,10 @@ export function HowItWorks() {
                 loop
                 playsInline
                 onPlay={() => {
-                  if (narrating === null && !cancelRef.current) {
-                    void playNarration();
-                  } else {
+                  if (runningRef.current) {
                     void audioRef.current?.play().catch(() => {});
+                  } else {
+                    void playNarration();
                   }
                 }}
                 onPause={() => audioRef.current?.pause()}
