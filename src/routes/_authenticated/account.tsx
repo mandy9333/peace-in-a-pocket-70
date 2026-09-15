@@ -53,7 +53,9 @@ function AccountPage() {
   const queryClient = useQueryClient();
 
   const planLabel =
-    subscription?.price_id === PLANS.yearly.priceId
+    !subscription
+      ? "No membership yet"
+      : subscription.price_id === PLANS.yearly.priceId
       ? `${PLANS.yearly.label} — ${PLANS.yearly.price} ${PLANS.yearly.per}`
       : `${PLANS.monthly.label} — ${PLANS.monthly.price} ${PLANS.monthly.per}`;
 
@@ -129,7 +131,9 @@ function AccountPage() {
           <div className="flex items-center gap-2 text-primary">
             <CreditCard className="size-5" />
             <span className="text-xs font-semibold uppercase tracking-wider">
-              {subscription?.status === "past_due"
+              {!subscription
+                ? "Inactive"
+                : subscription.status === "past_due"
                 ? "Payment problem"
                 : subscription?.cancel_at_period_end
                   ? "Ending soon"
@@ -147,7 +151,7 @@ function AccountPage() {
           <Button
             type="button"
             onClick={() => void handlePortal()}
-            disabled={busy}
+            disabled={busy || !subscription}
             className="mt-6 h-11 w-full rounded-full"
           >
             {busy ? "Opening…" : "Manage or cancel"}

@@ -32,3 +32,4 @@
 ## Later
 - [ ] Go live: legal pages (terms, refund, privacy) + identity verification
 - [ ] Moon session photos awaiting user uploads
+- [ ] Move the complete meditation catalog and images to protected server storage (session narration and generated audio are protected now; static titles and images remain bundled)
