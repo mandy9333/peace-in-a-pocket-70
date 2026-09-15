@@ -1,4 +1,5 @@
 import { createFileRoute, Outlet, redirect, Link, useLocation } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSubscription } from "@/hooks/use-subscription";
 import { Lock } from "lucide-react";
