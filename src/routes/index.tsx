@@ -134,6 +134,8 @@ function Home() {
             </div>
           </Link>
         </section>
+        )}
+
 
         {/* Daily session */}
         <section className="mb-10">
