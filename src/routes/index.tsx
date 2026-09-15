@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useMeditationStats } from "@/hooks/use-meditation-stats";
-import { sessions, formatTime } from "@/lib/meditation";
-import { Flame, Play } from "lucide-react";
+import { sessions, getWeeklySession, getMoonSession } from "@/lib/meditation";
+import { moonPhaseLabel, moonPhase } from "@/lib/moon";
+import { Flame, Play, Moon, Sparkles } from "lucide-react";
 import { HowItWorks } from "@/components/how-it-works";
 
 export const Route = createFileRoute("/")({
@@ -26,6 +27,9 @@ function Home() {
 
   const [now, setNow] = useState<Date | null>(null);
   useEffect(() => setNow(new Date()), []);
+
+  const weekly = now ? getWeeklySession(now) : null;
+  const moonSession = now ? getMoonSession(now) : null;
 
   const greeting = () => {
     if (!now) return "Welcome back";
@@ -65,6 +69,73 @@ function Home() {
         </header>
 
         <HowItWorks />
+
+        {/* Moon ritual — only visible on a full or half moon */}
+        {moonSession && now && (
+          <section className="mb-6">
+            <Link
+              to="/player/$id"
+              params={{ id: moonSession.id }}
+              className="group relative block overflow-hidden rounded-3xl ring-1 ring-border"
+            >
+              <img
+                src={moonSession.image}
+                alt={moonSession.title}
+                width={1024}
+                height={1024}
+                className="aspect-[16/9] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-5">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur">
+                  <Moon className="size-3" />
+                  {moonPhaseLabel[moonPhase(now)]} tonight
+                </span>
+                <h2 className="mt-2 text-xl font-semibold text-white">
+                  {moonSession.title}
+                </h2>
+                <p className="mt-1 text-xs text-white/80">
+                  {moonSession.durationMinutes} min special practice
+                </p>
+              </div>
+            </Link>
+          </section>
+        )}
+
+        {/* This week's new session */}
+        {weekly && (
+        <section className="mb-8">
+          <Link
+            to="/player/$id"
+            params={{ id: weekly.id }}
+            className="group flex items-center gap-4 rounded-3xl bg-secondary p-3 ring-1 ring-border"
+          >
+            <div className="size-20 flex-shrink-0 overflow-hidden rounded-2xl bg-muted">
+              <img
+                src={weekly.image}
+                alt={weekly.title}
+                width={1024}
+                height={1024}
+                loading="lazy"
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            </div>
+            <div className="flex-1 pr-2">
+              <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
+                <Sparkles className="size-3" />
+                New this week
+              </span>
+              <h3 className="mt-1 text-base font-semibold text-foreground">
+                {weekly.title}
+              </h3>
+              <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
+                {weekly.description}
+              </p>
+            </div>
+          </Link>
+        </section>
+        )}
+
 
         {/* Daily session */}
         <section className="mb-10">
