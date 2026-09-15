@@ -157,14 +157,14 @@ export function useSoundscape(category: MeditationCategory) {
     void nodes.ctx.close();
   }, []);
 
-  // Live-apply volume/mute while playing.
+  // Live-apply volume/mute/duck while playing.
   useEffect(() => {
     const nodes = nodesRef.current;
     if (!nodes || !playingRef.current) return;
-    fade(nodes.master, nodes.ctx, target, 0.4);
-  }, [target]);
+    fade(nodes.master, nodes.ctx, target, ducked ? 0.6 : 1.2);
+  }, [target, ducked]);
 
   useEffect(() => teardown, [teardown]);
 
-  return { volume, setVolume, muted, setMuted, start, pause, teardown };
+  return { volume, setVolume, muted, setMuted, start, pause, teardown, setDucked };
 }
