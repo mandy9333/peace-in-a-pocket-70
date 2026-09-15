@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useMeditationStats } from "@/hooks/use-meditation-stats";
-import { sessions, formatTime } from "@/lib/meditation";
-import { Flame, Play } from "lucide-react";
+import { sessions, getWeeklySession, getMoonSession } from "@/lib/meditation";
+import { moonPhaseLabel, moonPhase } from "@/lib/moon";
+import { Flame, Play, Moon, Sparkles } from "lucide-react";
 import { HowItWorks } from "@/components/how-it-works";
 
 export const Route = createFileRoute("/")({
