@@ -47,10 +47,15 @@ function Player() {
   const [isFinished, setIsFinished] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const hasRecorded = useRef(false);
-  const { volume, setVolume, muted, setMuted, start, pause } = useSoundscape(
-    session.category,
-  );
+  const { volume, setVolume, muted, setMuted, start, pause, setDucked } =
+    useSoundscape(session.category);
   const voice = useVoiceover();
+
+  // Keep the soundscape running under the guidance — just softer while a line
+  // is being spoken, so music fills the space between words.
+  useEffect(() => {
+    setDucked(isPlaying && voice.enabled && voice.isSpeaking);
+  }, [isPlaying, voice.enabled, voice.isSpeaking, setDucked]);
   const spokenRef = useRef<Set<number>>(new Set());
 
   useEffect(() => {

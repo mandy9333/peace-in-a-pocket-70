@@ -48,7 +48,10 @@ export function useSoundscape(category: MeditationCategory) {
     }
   }, [volume, muted]);
 
-  const target = muted ? 0 : volume * 0.25;
+  // While guidance is speaking the ambient bed dips instead of stopping,
+  // so music keeps flowing in the pauses between words.
+  const [ducked, setDucked] = useState(false);
+  const target = muted ? 0 : volume * 0.25 * (ducked ? 0.45 : 1);
 
   const build = useCallback(() => {
     const AudioCtor =
@@ -154,14 +157,14 @@ export function useSoundscape(category: MeditationCategory) {
     void nodes.ctx.close();
   }, []);
 
-  // Live-apply volume/mute while playing.
+  // Live-apply volume/mute/duck while playing.
   useEffect(() => {
     const nodes = nodesRef.current;
     if (!nodes || !playingRef.current) return;
-    fade(nodes.master, nodes.ctx, target, 0.4);
-  }, [target]);
+    fade(nodes.master, nodes.ctx, target, ducked ? 0.6 : 1.2);
+  }, [target, ducked]);
 
   useEffect(() => teardown, [teardown]);
 
-  return { volume, setVolume, muted, setMuted, start, pause, teardown };
+  return { volume, setVolume, muted, setMuted, start, pause, teardown, setDucked };
 }
