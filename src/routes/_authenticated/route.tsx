@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, redirect, Link } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect, Link, useLocation } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useSubscription } from "@/hooks/use-subscription";
 import { Lock } from "lucide-react";
@@ -15,6 +15,8 @@ export const Route = createFileRoute("/_authenticated")({
 
 function MemberArea() {
   const { isActive, loading, isPastDue } = useSubscription();
+  const location = useLocation();
+  const isAccountPage = location.pathname === "/account";
 
   if (loading) {
     return (
@@ -24,7 +26,7 @@ function MemberArea() {
     );
   }
 
-  if (!isActive) {
+  if (!isActive && !isAccountPage) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background px-6">
         <div className="max-w-sm text-center">

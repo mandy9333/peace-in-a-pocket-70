@@ -1,5 +1,3 @@
-import { resolvePaddlePrice } from "@/utils/payments.functions";
-
 const clientToken = import.meta.env["VITE_PAYMENTS_CLIENT_TOKEN"] as string | undefined;
 
 declare global {
@@ -36,11 +34,6 @@ export async function initializePaddle() {
     script.onerror = reject;
     document.head.appendChild(script);
   });
-}
-
-export async function getPaddlePriceId(priceId: string): Promise<string> {
-  const environment = getPaddleEnvironment();
-  return resolvePaddlePrice({ data: { priceId, environment } });
 }
 
 export const PLANS = {

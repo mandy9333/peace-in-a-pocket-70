@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getRecording } from "@/lib/voice-recordings";
+import { supabase } from "@/integrations/supabase/client";
 
 const STORAGE_KEY = "stillpoint.voice";
 
@@ -63,9 +64,15 @@ export function useVoiceover() {
         /* fall back to generated narration */
       }
     }
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    if (!token) throw new Error("Sign in is required for voice guidance.");
     const res = await fetch("/api/tts", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ text }),
     });
     if (!res.ok) {

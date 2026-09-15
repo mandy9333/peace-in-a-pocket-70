@@ -4,7 +4,7 @@
 - [x] Enable Lovable Cloud (accounts + database)
 - [x] Enable email/password + Google sign-in
 - [x] Enable built-in payments (test + live)
-- [ ] Create membership product: $2.99/month, $19/year
+- [x] Create membership product: $2.99/month, $19/year
 - [x] subscriptions table + RLS + has_active_subscription
 - [x] Payments client utils, price resolver, webhook handler
 - [x] Auth page (sign in / sign up)
@@ -14,8 +14,13 @@
 - [x] Test-mode banner
 
 ## Audit request (from user, 22:10 UTC)
-- [ ] Review catalog / auth / payment / entitlement / renewal setup and report gaps
-- [ ] Give preview test plan incl. test card numbers
+- [x] Review catalog / auth / payment / entitlement / renewal setup and report gaps
+- [x] Give preview test plan incl. test card numbers
+- [x] Authenticate checkout identity server-side
+- [x] Protect generated voice audio by active membership
+- [x] Add missed-webhook membership refresh
+- [x] Add self-service account deletion and support email
+- [x] Restore intended page after Google sign-in
 
 ## Seller policy pages (readiness check, seller = "Mandy's Meditation Space")
 - [x] Public /pricing page
@@ -27,3 +32,4 @@
 ## Later
 - [ ] Go live: legal pages (terms, refund, privacy) + identity verification
 - [ ] Moon session photos awaiting user uploads
+- [ ] Move the complete meditation catalog and images to protected server storage (session narration and generated audio are protected now; static titles and images remain bundled)

@@ -65,3 +65,7 @@ export async function listRecordedKeys(): Promise<string[]> {
   );
   return keys.map(String);
 }
+
+export async function clearAllRecordings() {
+  await withStore("readwrite", (store) => store.clear() as IDBRequest<undefined>);
+}

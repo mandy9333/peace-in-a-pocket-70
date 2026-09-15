@@ -158,7 +158,8 @@ function TermsPage() {
               We may update these terms; material changes will be announced in the app. These
               terms are governed by the laws of the seller's jurisdiction, and the courts there
               have jurisdiction over any dispute. Questions? Contact Mandy's Meditation Space
-              through the support link in the app, or Paddle for anything to do with billing.
+               at <a href="mailto:Mandygudeman@gmail.com" className="underline">Mandygudeman@gmail.com</a>,
+               or Paddle for anything to do with billing.
             </p>
           </section>
         </div>
