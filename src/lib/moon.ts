@@ -58,6 +58,24 @@ export const weekIndex = (date: Date) => {
   return Math.max(0, Math.floor((date.getTime() - start) / (7 * 86400000)));
 };
 
+/** Next date (from `from`) when the moon's age hits `targetAge` days. */
+export const nextAgeDate = (targetAge: number, from: Date) => {
+  const age = moonAge(from);
+  let delta = targetAge - age;
+  if (delta < 0) delta += SYNODIC;
+  return new Date(from.getTime() + delta * 86400000);
+};
+
+/** Next full moon on or after `from`. */
+export const nextFullMoon = (from: Date) => nextAgeDate(SYNODIC / 2, from);
+
+/** Next half moon (first or last quarter) on or after `from`. */
+export const nextHalfMoon = (from: Date) => {
+  const first = nextAgeDate(SYNODIC / 4, from);
+  const last = nextAgeDate((SYNODIC * 3) / 4, from);
+  return first <= last ? first : last;
+};
+
 /** Sunday that starts the current week, in local time. */
 export const weekStart = (date: Date) => {
   const d = new Date(date);
