@@ -24,6 +24,7 @@ export function HowItWorks() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const urlsRef = useRef<string[]>([]);
   const cancelRef = useRef(false);
+  const runningRef = useRef(false);
 
   useEffect(() => {
     const urls = urlsRef.current;
@@ -34,6 +35,7 @@ export function HowItWorks() {
   }, []);
 
   const clipUrl = async (index: number) => {
+    // Always read the newest saved recording so a line just recorded is used.
     const own = await getRecording(cueKey(NARRATION_ID, index));
     if (own) {
       const url = URL.createObjectURL(own);
@@ -53,11 +55,14 @@ export function HowItWorks() {
 
   const stopNarration = () => {
     cancelRef.current = true;
+    runningRef.current = false;
     audioRef.current?.pause();
     setNarrating(null);
   };
 
   const playNarration = async () => {
+    if (runningRef.current) return;
+    runningRef.current = true;
     cancelRef.current = false;
     setNarrationError(null);
     let audio = audioRef.current;
@@ -87,8 +92,16 @@ export function HowItWorks() {
         err instanceof Error ? err.message : "Narration failed.",
       );
     } finally {
+      runningRef.current = false;
       setNarrating(null);
     }
+  };
+
+  /** Restart narration from the top so newly recorded lines are heard. */
+  const restartNarration = () => {
+    stopNarration();
+    cancelRef.current = false;
+    setTimeout(() => void playNarration(), 60);
   };
 
   return (
