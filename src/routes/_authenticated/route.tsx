@@ -15,14 +15,39 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 function MemberArea() {
-  const { isActive, loading, isPastDue } = useSubscription();
+  const { isActive, loading, isPastDue, refresh } = useSubscription();
   const location = useLocation();
   const isAccountPage = location.pathname === "/account";
+  const justPaid = typeof window !== "undefined"
+    && new URLSearchParams(window.location.search).get("checkout") === "success";
+  const [settling, setSettling] = useState(justPaid);
 
-  if (loading) {
+  // A payment can land a few seconds before it is confirmed to the app, so wait
+  // briefly instead of showing the lock screen to someone who just paid.
+  useEffect(() => {
+    if (!justPaid) return;
+    let attempts = 0;
+    const timer = setInterval(() => {
+      attempts += 1;
+      void refresh();
+      if (attempts >= 8) {
+        clearInterval(timer);
+        setSettling(false);
+      }
+    }, 2000);
+    return () => clearInterval(timer);
+  }, [justPaid, refresh]);
+
+  useEffect(() => {
+    if (isActive) setSettling(false);
+  }, [isActive]);
+
+  if (loading || (settling && !isActive)) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <p className="text-sm text-muted-foreground">Opening your practice…</p>
+        <p className="text-sm text-muted-foreground">
+          {settling ? "Confirming your membership…" : "Opening your practice…"}
+        </p>
       </div>
     );
   }
