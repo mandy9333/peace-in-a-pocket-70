@@ -10,6 +10,15 @@ export { EventName };
 
 export type PaddleEnv = "sandbox" | "live";
 
+export function getRequestEnvironment(request: Request): PaddleEnv {
+  const hostname = new URL(request.url).hostname;
+  return hostname === "localhost"
+    || hostname.startsWith("id-preview--")
+    || hostname.includes("-dev.lovable.app")
+    ? "sandbox"
+    : "live";
+}
+
 const GATEWAY_BASE_URL = "https://connector-gateway.lovable.dev/paddle";
 
 export function getConnectionApiKey(env: PaddleEnv): string {

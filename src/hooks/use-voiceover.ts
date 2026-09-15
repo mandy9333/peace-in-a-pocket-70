@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getRecording } from "@/lib/voice-recordings";
 import { supabase } from "@/integrations/supabase/client";
-import { getPaddleEnvironment } from "@/lib/paddle";
 
 const STORAGE_KEY = "stillpoint.voice";
 
@@ -73,7 +72,6 @@ export function useVoiceover() {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-        "X-Payments-Environment": getPaddleEnvironment(),
       },
       body: JSON.stringify({ text }),
     });

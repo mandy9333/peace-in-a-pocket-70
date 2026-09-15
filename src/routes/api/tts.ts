@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
+import { getRequestEnvironment } from "@/lib/paddle.server";
 
 const VOICE = "sage";
 
@@ -26,7 +27,7 @@ export const Route = createFileRoute("/api/tts")({
         if (authError || !userId) {
           return Response.json({ error: "Sign in is required." }, { status: 401 });
         }
-        const environment = request.headers.get("x-payments-environment") === "live" ? "live" : "sandbox";
+        const environment = getRequestEnvironment(request);
         const { data: subscriptions, error: membershipError } = await supabase
           .from("subscriptions")
           .select("status, current_period_end")

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { initializePaddle, getPaddleEnvironment } from "@/lib/paddle";
+import { initializePaddle } from "@/lib/paddle";
 import { createCheckoutTransaction } from "@/utils/payments.functions";
 import { useServerFn } from "@tanstack/react-start";
 
@@ -15,7 +15,7 @@ export function usePaddleCheckout() {
     try {
       await initializePaddle();
       const { transactionId } = await createTransaction({
-        data: { priceId: options.priceId as "stillpoint_monthly" | "stillpoint_yearly", environment: getPaddleEnvironment() },
+        data: { priceId: options.priceId as "stillpoint_monthly" | "stillpoint_yearly" },
       });
 
       window.Paddle.Checkout.open({

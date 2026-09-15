@@ -4,7 +4,6 @@ import howItWorksAsset from "@/assets/how-it-works.mp4.asset.json";
 import { cueKey, getRecording } from "@/lib/voice-recordings";
 import { useVoiceRecorder } from "@/hooks/use-voice-recorder";
 import { supabase } from "@/integrations/supabase/client";
-import { getPaddleEnvironment } from "@/lib/paddle";
 
 const NARRATION_ID = "how-it-works";
 
@@ -52,7 +51,6 @@ export function HowItWorks() {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-        "X-Payments-Environment": getPaddleEnvironment(),
       },
       body: JSON.stringify({ text: steps[index] }),
     });
