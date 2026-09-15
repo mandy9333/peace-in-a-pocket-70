@@ -121,6 +121,57 @@ export const refreshMySubscription = createServerFn({ method: "POST" })
     if (error) throw error;
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Recovery path: the purchase went through but no webhook ever created a row.
+    // Find this member's subscription at Paddle by the userId we set at checkout.
+    if (!rows || rows.length === 0) {
+      const listResponse = await gatewayFetch(
+        environment,
+        "/subscriptions?per_page=200&status=active,trialing,past_due,canceled",
+      );
+      if (listResponse.ok) {
+        const listResult = (await listResponse.json()) as {
+          data?: Array<{
+            id: string;
+            customer_id: string;
+            status: string;
+            custom_data?: { userId?: string } | null;
+            current_billing_period?: { starts_at?: string; ends_at?: string } | null;
+            scheduled_change?: { action?: string } | null;
+            items?: Array<{
+              price?: { import_meta?: { external_id?: string } | null } | null;
+              product?: { import_meta?: { external_id?: string } | null } | null;
+            }>;
+          }>;
+        };
+        const match = listResult.data?.find(
+          (sub) => sub.custom_data?.userId === context.userId,
+        );
+        const priceId = match?.items?.[0]?.price?.import_meta?.external_id;
+        const productId = match?.items?.[0]?.product?.import_meta?.external_id;
+        if (match && priceId && productId) {
+          const { error: insertError } = await supabaseAdmin.from("subscriptions").upsert(
+            {
+              user_id: context.userId,
+              paddle_subscription_id: match.id,
+              paddle_customer_id: match.customer_id,
+              product_id: productId,
+              price_id: priceId,
+              status: match.status,
+              current_period_start: match.current_billing_period?.starts_at ?? null,
+              current_period_end: match.current_billing_period?.ends_at ?? null,
+              cancel_at_period_end: match.scheduled_change?.action === "cancel",
+              environment,
+              updated_at: new Date().toISOString(),
+            },
+            { onConflict: "paddle_subscription_id" },
+          );
+          if (insertError) throw insertError;
+          return { refreshed: true, recovered: true };
+        }
+      }
+    }
+
     for (const row of rows ?? []) {
       const response = await gatewayFetch(environment, `/subscriptions/${row.paddle_subscription_id}`);
       if (!response.ok) continue;
