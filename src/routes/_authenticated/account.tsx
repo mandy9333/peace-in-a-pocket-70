@@ -164,7 +164,7 @@ function AccountPage() {
           <Button
             type="button"
             variant="ghost"
-            disabled={busy || !subscription}
+            disabled={busy}
             onClick={() => void handleRefreshMembership()}
             className="mt-2 w-full text-muted-foreground"
           >
