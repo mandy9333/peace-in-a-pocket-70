@@ -2,6 +2,7 @@ import { useState } from "react";
 import { initializePaddle } from "@/lib/paddle";
 import { createCheckoutTransaction } from "@/utils/payments.functions";
 import { useServerFn } from "@tanstack/react-start";
+import { supabase } from "@/integrations/supabase/client";
 
 export function usePaddleCheckout() {
   const [loading, setLoading] = useState(false);
@@ -14,12 +15,17 @@ export function usePaddleCheckout() {
     setLoading(true);
     try {
       await initializePaddle();
-      const { transactionId } = await createTransaction({
-        data: { priceId: options.priceId as "stillpoint_monthly" | "stillpoint_yearly" },
-      });
+      const [{ transactionId }, { data: userData }] = await Promise.all([
+        createTransaction({
+          data: { priceId: options.priceId as "stillpoint_monthly" | "stillpoint_yearly" },
+        }),
+        supabase.auth.getUser(),
+      ]);
+      const email = userData.user?.email;
 
       window.Paddle.Checkout.open({
         transactionId,
+        ...(email ? { customer: { email } } : {}),
         settings: {
           displayMode: "overlay",
           successUrl: options.successUrl || `${window.location.origin}/home?checkout=success`,

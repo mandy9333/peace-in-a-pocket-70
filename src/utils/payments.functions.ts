@@ -30,13 +30,26 @@ export const createCheckoutTransaction = createServerFn({ method: "POST" })
     const price = priceResult.data?.[0];
     if (!price) throw new Error("Membership plan is unavailable");
 
+    // Prefill the member's email in checkout by attaching a Paddle customer.
     const email = (context.claims as { email?: string } | undefined)?.email;
+    let customerId: string | undefined;
+    if (email) {
+      const customerResponse = await gatewayFetch(environment, "/customers", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+      });
+      if (customerResponse.ok) {
+        const customerResult = (await customerResponse.json()) as { data?: { id?: string } };
+        customerId = customerResult.data?.id;
+      }
+    }
+
     const transactionResponse = await gatewayFetch(environment, "/transactions", {
       method: "POST",
       body: JSON.stringify({
         items: [{ price_id: price.id, quantity: 1 }],
         custom_data: { userId: context.userId },
-        ...(email ? { customer: { email } } : {}),
+        ...(customerId ? { customer_id: customerId } : {}),
       }),
     });
     const transactionResult = (await transactionResponse.json()) as {
