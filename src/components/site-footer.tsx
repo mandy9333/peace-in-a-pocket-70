@@ -5,8 +5,14 @@ export function SiteFooter() {
     <footer className="mt-16 border-t border-border px-6 py-10 text-center">
       <p className="text-sm font-medium text-foreground">Mandy's Meditation Space</p>
       <nav className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
+        <Link to="/" className="hover:text-foreground hover:underline">
+          Home
+        </Link>
         <Link to="/pricing" className="hover:text-foreground hover:underline">
           Pricing
+        </Link>
+        <Link to="/contact" className="hover:text-foreground hover:underline">
+          Contact
         </Link>
         <Link to="/terms" className="hover:text-foreground hover:underline">
           Terms &amp; Conditions
