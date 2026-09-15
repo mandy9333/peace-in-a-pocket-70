@@ -9,7 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
 import { Route as AuthenticatedMoonRouteImport } from './routes/_authenticated/moon'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
@@ -17,9 +17,9 @@ import { Route as ApiTtsRouteImport } from './routes/api/tts'
 import { Route as AuthenticatedPlayerIdRouteImport } from './routes/_authenticated/player.$id'
 import { Route as AuthenticatedRecordIdRouteImport } from './routes/_authenticated/record.$id'
 
-const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
-  id: '/_authenticated/',
-  path: '/',
+const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
+  id: '/_authenticated/home',
+  path: '/home',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedLibraryRoute = AuthenticatedLibraryRouteImport.update({
@@ -54,80 +54,80 @@ const AuthenticatedRecordIdRoute = AuthenticatedRecordIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/home': typeof AuthenticatedHomeRoute
   '/library': typeof AuthenticatedLibraryRoute
   '/moon': typeof AuthenticatedMoonRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/api/tts': typeof ApiTtsRoute
-  '/': typeof AuthenticatedIndexRoute
   '/player/$id': typeof AuthenticatedPlayerIdRoute
   '/record/$id': typeof AuthenticatedRecordIdRoute
 }
 export interface FileRoutesByTo {
+  '/home': typeof AuthenticatedHomeRoute
   '/library': typeof AuthenticatedLibraryRoute
   '/moon': typeof AuthenticatedMoonRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/api/tts': typeof ApiTtsRoute
-  '/': typeof AuthenticatedIndexRoute
   '/player/$id': typeof AuthenticatedPlayerIdRoute
   '/record/$id': typeof AuthenticatedRecordIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRoute
   '/_authenticated/moon': typeof AuthenticatedMoonRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/api/tts': typeof ApiTtsRoute
-  '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/player/$id': typeof AuthenticatedPlayerIdRoute
   '/_authenticated/record/$id': typeof AuthenticatedRecordIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/home'
     | '/library'
     | '/moon'
     | '/profile'
     | '/api/tts'
-    | '/'
     | '/player/$id'
     | '/record/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/home'
     | '/library'
     | '/moon'
     | '/profile'
     | '/api/tts'
-    | '/'
     | '/player/$id'
     | '/record/$id'
   id:
     | '__root__'
+    | '/_authenticated/home'
     | '/_authenticated/library'
     | '/_authenticated/moon'
     | '/_authenticated/profile'
     | '/api/tts'
-    | '/_authenticated/'
     | '/_authenticated/player/$id'
     | '/_authenticated/record/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute
   AuthenticatedMoonRoute: typeof AuthenticatedMoonRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   ApiTtsRoute: typeof ApiTtsRoute
-  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedPlayerIdRoute: typeof AuthenticatedPlayerIdRoute
   AuthenticatedRecordIdRoute: typeof AuthenticatedRecordIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_authenticated/': {
-      id: '/_authenticated/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedIndexRouteImport
+    '/_authenticated/home': {
+      id: '/_authenticated/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof AuthenticatedHomeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/library': {
@@ -176,11 +176,11 @@ declare module '@tanstack/react-router' {
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRoute,
   AuthenticatedMoonRoute: AuthenticatedMoonRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   ApiTtsRoute: ApiTtsRoute,
-  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedPlayerIdRoute: AuthenticatedPlayerIdRoute,
   AuthenticatedRecordIdRoute: AuthenticatedRecordIdRoute,
 }

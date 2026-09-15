@@ -6,7 +6,7 @@ import { moonPhaseLabel, moonPhase } from "@/lib/moon";
 import { Flame, Play, Moon, Sparkles } from "lucide-react";
 import { HowItWorks } from "@/components/how-it-works";
 
-export const Route = createFileRoute("/_authenticated/")({
+export const Route = createFileRoute("/_authenticated/home")({
   head: () => ({
     meta: [
       { title: "Stillpoint — Meditation" },
