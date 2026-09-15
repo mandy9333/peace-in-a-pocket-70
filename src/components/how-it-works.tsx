@@ -141,11 +141,21 @@ export function HowItWorks() {
           >
             <div className="relative">
               <video
+                ref={videoRef}
                 src={howItWorksAsset.url}
                 controls
                 autoPlay
                 muted
+                loop
                 playsInline
+                onPlay={() => {
+                  if (narrating === null && !cancelRef.current) {
+                    void playNarration();
+                  } else {
+                    void audioRef.current?.play().catch(() => {});
+                  }
+                }}
+                onPause={() => audioRef.current?.pause()}
                 className="aspect-video w-full bg-black object-cover"
               />
               <button
