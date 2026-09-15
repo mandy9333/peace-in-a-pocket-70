@@ -95,7 +95,15 @@ export function HowItWorks() {
     <section className="mb-10">
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          // Unlock audio within the tap so the voice over can start with the video.
+          if (!audioRef.current) audioRef.current = new Audio();
+          void audioRef.current
+            .play()
+            .then(() => audioRef.current?.pause())
+            .catch(() => {});
+          setOpen(true);
+        }}
         className="group relative block w-full overflow-hidden rounded-3xl bg-card text-left ring-1 ring-border"
       >
         <video
