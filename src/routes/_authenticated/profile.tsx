@@ -32,7 +32,14 @@ function Profile() {
           <p className="mt-1 text-muted-foreground">
             Your practice, at a glance.
           </p>
+          <Link
+            to="/account"
+            className="mt-4 inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm font-medium text-foreground"
+          >
+            Membership &amp; billing
+          </Link>
         </header>
+
 
         {/* Hero card */}
         <section className="relative mb-8 overflow-hidden rounded-3xl bg-card ring-1 ring-border">
