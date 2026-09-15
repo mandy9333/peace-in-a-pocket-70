@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Check } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { useSubscription } from "@/hooks/use-subscription";
 import { usePaddleCheckout } from "@/hooks/use-paddle-checkout";
 import { PLANS, type PlanKey } from "@/lib/paddle";
@@ -27,21 +28,13 @@ export const Route = createFileRoute("/pricing")({
   component: PricingPage,
 });
 
-const included = [
-  "Every guided meditation in the library",
-  "A brand-new session each week",
-  "Full moon and half moon rituals",
-  "Ambient soundscapes that soften under each spoken line",
-  "Record the guidance in your own voice",
-  "Streaks, minutes and milestones",
-];
-
 function PricingPage() {
   const { user, isActive, loading } = useSubscription();
   const { openCheckout, loading: checkoutBusy } = usePaddleCheckout();
   const navigate = useNavigate();
+  const [plan, setPlan] = useState<PlanKey>("yearly");
 
-  async function choose(plan: PlanKey) {
+  async function checkout() {
     if (!user) {
       void navigate({ to: "/auth", search: { next: "/pricing" } });
       return;
@@ -51,6 +44,8 @@ function PricingPage() {
       successUrl: `${window.location.origin}/home?checkout=success`,
     });
   }
+
+  const selected = PLANS[plan];
 
   return (
     <div className="min-h-screen bg-background pb-16">
@@ -63,77 +58,86 @@ function PricingPage() {
           Become a member
         </h1>
         <p className="mt-2 text-muted-foreground">
-          One membership. Every practice. Cancel any time.
+          Every meditation, every ritual, one membership.
         </p>
 
-        <div className="mt-8 space-y-4">
+        <div className="mt-8 grid grid-cols-2 gap-2 rounded-full bg-secondary p-1.5">
           {(Object.keys(PLANS) as PlanKey[]).map((key) => {
-            const plan = PLANS[key];
-            const isYear = key === "yearly";
+            const option = PLANS[key];
+            const active = plan === key;
             return (
-              <div
+              <button
                 key={key}
-                className={`rounded-3xl p-6 ring-1 ${
-                  isYear ? "bg-secondary ring-primary/40" : "bg-card ring-border"
+                type="button"
+                onClick={() => setPlan(key)}
+                className={`relative rounded-full px-4 py-3 text-center transition-colors ${
+                  active
+                    ? "bg-card shadow-sm ring-1 ring-border"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                <div className="flex items-baseline justify-between">
-                  <div>
-                    <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                      {plan.label}
-                    </p>
-                    <p className="mt-2 text-3xl font-semibold text-foreground">{plan.price}</p>
-                    <p className="text-xs text-muted-foreground">{plan.per}</p>
-                  </div>
-                  {isYear && (
-                    <span className="rounded-full bg-primary px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary-foreground">
-                      Best value
-                    </span>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  disabled={checkoutBusy || loading}
-                  onClick={() => void choose(key)}
-                  className="mt-5 w-full rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground disabled:opacity-60"
-                >
-                  {isActive ? "You're a member" : `Choose ${plan.label.toLowerCase()}`}
-                </button>
-              </div>
+                {key === "yearly" && (
+                  <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-primary px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary-foreground">
+                    Best value
+                  </span>
+                )}
+                <span className="block text-sm font-semibold">{option.label}</span>
+                <span className="mt-0.5 block text-lg font-semibold text-foreground">
+                  {option.price}
+                  <span className="text-xs font-normal text-muted-foreground">
+                    {" "}
+                    {option.per}
+                  </span>
+                </span>
+              </button>
             );
           })}
         </div>
 
+        <button
+          type="button"
+          disabled={checkoutBusy || loading || isActive}
+          onClick={() => void checkout()}
+          className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-base font-semibold text-primary-foreground disabled:opacity-60"
+        >
+          {checkoutBusy && <Loader2 className="size-4 animate-spin" />}
+          {isActive
+            ? "You're a member"
+            : user
+              ? `Continue — ${selected.price} ${selected.per}`
+              : "Sign in to continue"}
+        </button>
+
         {isActive && (
           <Link
             to="/account"
-            className="mt-6 block text-center text-sm font-medium text-primary hover:underline"
+            className="mt-4 block text-center text-sm font-medium text-primary hover:underline"
           >
             Manage your membership
           </Link>
         )}
 
-        <section className="mt-10 rounded-3xl bg-card p-6 ring-1 ring-border">
-          <h2 className="text-lg font-semibold text-foreground">What's included</h2>
-          <ul className="mt-4 space-y-3">
-            {included.map((item) => (
-              <li key={item} className="flex gap-3 text-sm text-muted-foreground">
-                <Check className="mt-0.5 size-4 flex-shrink-0 text-primary" />
-                {item}
-              </li>
-            ))}
-          </ul>
-        </section>
+        <ul className="mt-8 space-y-2.5">
+          {[
+            "Every guided meditation",
+            "A new session each week",
+            "Full & half moon rituals",
+            "Cancel any time",
+          ].map((item) => (
+            <li key={item} className="flex gap-3 text-sm text-muted-foreground">
+              <Check className="mt-0.5 size-4 flex-shrink-0 text-primary" />
+              {item}
+            </li>
+          ))}
+        </ul>
 
-        <p className="mt-6 text-xs text-muted-foreground">
-          Prices in US dollars. Subscriptions renew automatically each month or year until
-          cancelled. You can cancel any time, and we offer a 30-day money-back guarantee — see
-          our{" "}
+        <p className="mt-8 text-xs text-muted-foreground">
+          Renews automatically until cancelled. 30-day money-back guarantee — see our{" "}
           <Link to="/refunds" className="underline">
             refund policy
           </Link>
-          . Payments and invoicing are handled by our reseller Paddle.com, the Merchant of
-          Record for all orders of Mandy's Meditation Space.
+          . Payments are handled by our reseller Paddle.com, the Merchant of Record for all
+          orders of Mandy's Meditation Space.
         </p>
       </main>
       <SiteFooter />

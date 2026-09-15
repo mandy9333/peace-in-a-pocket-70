@@ -30,11 +30,13 @@ export const createCheckoutTransaction = createServerFn({ method: "POST" })
     const price = priceResult.data?.[0];
     if (!price) throw new Error("Membership plan is unavailable");
 
+    const email = (context.claims as { email?: string } | undefined)?.email;
     const transactionResponse = await gatewayFetch(environment, "/transactions", {
       method: "POST",
       body: JSON.stringify({
         items: [{ price_id: price.id, quantity: 1 }],
         custom_data: { userId: context.userId },
+        ...(email ? { customer: { email } } : {}),
       }),
     });
     const transactionResult = (await transactionResponse.json()) as {
