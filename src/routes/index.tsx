@@ -103,6 +103,7 @@ function Home() {
         )}
 
         {/* This week's new session */}
+        {weekly && (
         <section className="mb-8">
           <Link
             to="/player/$id"
