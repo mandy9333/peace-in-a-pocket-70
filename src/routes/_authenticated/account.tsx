@@ -174,9 +174,15 @@ function AccountPage() {
 
         <section className="mt-6 border-t border-border pt-6">
           <h2 className="text-sm font-semibold text-foreground">Support and account</h2>
+          <Link
+            to="/contact"
+            className="mt-3 block text-sm text-primary hover:underline"
+          >
+            Ask a question
+          </Link>
           <a
             href="mailto:Mandygudeman@gmail.com"
-            className="mt-3 block text-sm text-primary hover:underline"
+            className="mt-1 block text-sm text-muted-foreground hover:underline"
           >
             Mandygudeman@gmail.com
           </a>
