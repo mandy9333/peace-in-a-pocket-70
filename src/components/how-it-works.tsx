@@ -162,6 +162,7 @@ export function HowItWorks() {
                 type="button"
                 onClick={() => {
                   stopNarration();
+                  recorder.stopPlayback();
                   setOpen(false);
                 }}
                 aria-label="Close video"
@@ -181,7 +182,7 @@ export function HowItWorks() {
               >
                 {narrating === null ? (
                   <>
-                    <Volume2 className="size-4" /> Play voice over
+                    <Volume2 className="size-4" /> Replay voice over
                   </>
                 ) : (
                   <>
@@ -191,8 +192,8 @@ export function HowItWorks() {
               </button>
               <p className="mt-2 text-center text-[11px] text-muted-foreground">
                 {recorder.recordedCount > 0
-                  ? `${recorder.recordedCount} of ${steps.length} lines in your own voice.`
-                  : "Tap the mic on any line to narrate it in your own voice."}
+                  ? `${recorder.recordedCount} of ${steps.length} lines in your own voice — they play with the video.`
+                  : "The voice over plays with the video — tap the mic on any line to make it your own voice."}
               </p>
               {narrationError ? (
                 <p className="mt-2 text-center text-[11px] text-destructive">
