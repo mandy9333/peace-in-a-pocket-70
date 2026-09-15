@@ -48,8 +48,6 @@ function PricingPage() {
     }
     await openCheckout({
       priceId: PLANS[plan].priceId,
-      customerEmail: user.email ?? undefined,
-      userId: user.id,
       successUrl: `${window.location.origin}/home?checkout=success`,
     });
   }
