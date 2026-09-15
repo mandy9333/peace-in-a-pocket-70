@@ -74,8 +74,12 @@ export function HowItWorks() {
         audio.src = url;
         await audio.play();
         await new Promise<void>((resolve) => {
-          audio!.onended = () => resolve();
-          audio!.onpause = () => resolve();
+          const timer = setInterval(() => {
+            if (cancelRef.current || audio!.ended) {
+              clearInterval(timer);
+              resolve();
+            }
+          }, 200);
         });
       }
     } catch (err) {
