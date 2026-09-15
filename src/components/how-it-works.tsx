@@ -21,6 +21,7 @@ export function HowItWorks() {
   const [narrationError, setNarrationError] = useState<string | null>(null);
   const recorder = useVoiceRecorder(NARRATION_ID);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const urlsRef = useRef<string[]>([]);
   const cancelRef = useRef(false);
 
@@ -73,8 +74,12 @@ export function HowItWorks() {
         audio.src = url;
         await audio.play();
         await new Promise<void>((resolve) => {
-          audio!.onended = () => resolve();
-          audio!.onpause = () => resolve();
+          const timer = setInterval(() => {
+            if (cancelRef.current || audio!.ended) {
+              clearInterval(timer);
+              resolve();
+            }
+          }, 200);
         });
       }
     } catch (err) {
@@ -90,7 +95,15 @@ export function HowItWorks() {
     <section className="mb-10">
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          // Unlock audio within the tap so the voice over can start with the video.
+          if (!audioRef.current) audioRef.current = new Audio();
+          void audioRef.current
+            .play()
+            .then(() => audioRef.current?.pause())
+            .catch(() => {});
+          setOpen(true);
+        }}
         className="group relative block w-full overflow-hidden rounded-3xl bg-card text-left ring-1 ring-border"
       >
         <video
@@ -136,17 +149,28 @@ export function HowItWorks() {
           >
             <div className="relative">
               <video
+                ref={videoRef}
                 src={howItWorksAsset.url}
                 controls
                 autoPlay
                 muted
+                loop
                 playsInline
+                onPlay={() => {
+                  if (narrating === null && !cancelRef.current) {
+                    void playNarration();
+                  } else {
+                    void audioRef.current?.play().catch(() => {});
+                  }
+                }}
+                onPause={() => audioRef.current?.pause()}
                 className="aspect-video w-full bg-black object-cover"
               />
               <button
                 type="button"
                 onClick={() => {
                   stopNarration();
+                  recorder.stopPlayback();
                   setOpen(false);
                 }}
                 aria-label="Close video"
@@ -166,7 +190,7 @@ export function HowItWorks() {
               >
                 {narrating === null ? (
                   <>
-                    <Volume2 className="size-4" /> Play voice over
+                    <Volume2 className="size-4" /> Replay voice over
                   </>
                 ) : (
                   <>
@@ -176,8 +200,8 @@ export function HowItWorks() {
               </button>
               <p className="mt-2 text-center text-[11px] text-muted-foreground">
                 {recorder.recordedCount > 0
-                  ? `${recorder.recordedCount} of ${steps.length} lines in your own voice.`
-                  : "Tap the mic on any line to narrate it in your own voice."}
+                  ? `${recorder.recordedCount} of ${steps.length} lines in your own voice — they play with the video.`
+                  : "The voice over plays with the video — tap the mic on any line to make it your own voice."}
               </p>
               {narrationError ? (
                 <p className="mt-2 text-center text-[11px] text-destructive">
