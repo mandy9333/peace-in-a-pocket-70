@@ -21,6 +21,7 @@ export function HowItWorks() {
   const [narrationError, setNarrationError] = useState<string | null>(null);
   const recorder = useVoiceRecorder(NARRATION_ID);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const urlsRef = useRef<string[]>([]);
   const cancelRef = useRef(false);
 
