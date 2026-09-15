@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 
 
-export const Route = createFileRoute("/player/$id")({
+export const Route = createFileRoute("/_authenticated/player/$id")({
   head: ({ params }) => {
     const session = getSessionById(params.id)!;
     return {
@@ -212,7 +212,7 @@ function Player() {
           </button>
 
           <Link
-            to="/"
+            to="/home"
             className="flex size-12 items-center justify-center rounded-full bg-card text-muted-foreground ring-1 ring-border transition-colors hover:text-foreground"
             aria-label="Done"
           >

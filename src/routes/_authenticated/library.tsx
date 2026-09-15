@@ -10,7 +10,7 @@ import {
 import { moonPhaseLabel, moonPhase } from "@/lib/moon";
 import { Clock, Moon, Sparkles } from "lucide-react";
 
-export const Route = createFileRoute("/library")({
+export const Route = createFileRoute("/_authenticated/library")({
   head: () => ({
     meta: [
       { title: "Library — Stillpoint" },

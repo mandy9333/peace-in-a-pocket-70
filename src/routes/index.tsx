@@ -1,257 +1,140 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { useMeditationStats } from "@/hooks/use-meditation-stats";
-import { sessions, getWeeklySession, getMoonSession } from "@/lib/meditation";
-import { moonPhaseLabel, moonPhase } from "@/lib/moon";
-import { Flame, Play, Moon, Sparkles } from "lucide-react";
-import { HowItWorks } from "@/components/how-it-works";
+import { Check, Moon, Mic, Sparkles } from "lucide-react";
+import { useSubscription } from "@/hooks/use-subscription";
+import { PLANS } from "@/lib/paddle";
+import { SiteFooter } from "@/components/site-footer";
+import { PaymentTestModeBanner } from "@/components/payment-test-mode-banner";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Stillpoint — Meditation" },
-      { name: "description", content: "Start your daily meditation practice." },
-      { property: "og:title", content: "Stillpoint — Meditation" },
-      { property: "og:description", content: "Start your daily meditation practice." },
+      { title: "Stillpoint — A members-only meditation practice" },
+      {
+        name: "description",
+        content:
+          "Stillpoint is a calm daily meditation membership: guided sessions, a new practice each week, moon rituals and your own recorded voice. $2.99/month or $19/year.",
+      },
+      { property: "og:title", content: "Stillpoint — A members-only meditation practice" },
+      {
+        property: "og:description",
+        content:
+          "Guided meditation, weekly sessions and moon rituals for $2.99 a month or $19 a year.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Home,
+  component: Landing,
 });
 
-function Home() {
-  const { stats } = useMeditationStats();
-  const daily = sessions[0]!;
-  const recent = sessions.slice(1, 4);
+const highlights = [
+  {
+    icon: Sparkles,
+    title: "A new session every week",
+    body: "Fresh guided practices arrive each Sunday, alongside the core four you can return to any day.",
+  },
+  {
+    icon: Moon,
+    title: "Full moon & half moon rituals",
+    body: "Special longer practices that open on the nights the moon turns full or half.",
+  },
+  {
+    icon: Mic,
+    title: "Your own voice, if you want it",
+    body: "Record each line of guidance yourself. Recordings stay on your device and play in place of the standard voice.",
+  },
+];
 
-  const [now, setNow] = useState<Date | null>(null);
-  useEffect(() => setNow(new Date()), []);
-
-  const weekly = now ? getWeeklySession(now) : null;
-  const moonSession = now ? getMoonSession(now) : null;
-
-  const greeting = () => {
-    if (!now) return "Welcome back";
-    const hour = now.getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
-  };
+function Landing() {
+  const { user, isActive } = useSubscription();
 
   return (
-    <div className="min-h-screen bg-background pb-32">
-      <main className="mx-auto max-w-md px-6 pt-12">
-        <header className="mb-8 flex items-end justify-between">
-          <div>
-            <p className="text-sm text-muted-foreground">
-              {now
-                ? now.toLocaleDateString("en-US", {
-                    weekday: "long",
-                    month: "short",
-                    day: "numeric",
-                  })
-                : "\u00a0"}
-            </p>
-            <h1 className="mt-1 text-3xl font-semibold tracking-tight text-foreground">
-              {greeting()}
-            </h1>
-          </div>
-          <div className="flex flex-col items-center rounded-2xl bg-secondary px-4 py-2">
-            <div className="flex items-center gap-1.5 text-primary">
-              <Flame className="size-4" fill="currentColor" />
-              <span className="text-lg font-semibold leading-none">{stats.streak}</span>
-            </div>
-            <span className="mt-1 text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
-              Streak
-            </span>
-          </div>
-        </header>
+    <div className="min-h-screen bg-background">
+      <PaymentTestModeBanner />
+      <main className="mx-auto max-w-md px-6 pt-16">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+          Mandy's Meditation Space
+        </p>
+        <h1 className="mt-4 text-4xl font-semibold leading-tight tracking-tight text-foreground">
+          Stillpoint
+        </h1>
+        <p className="mt-3 text-lg text-muted-foreground">
+          A quiet daily meditation practice — guided sessions, ambient sound and rituals that
+          follow the moon.
+        </p>
 
-        <HowItWorks />
-
-        {/* Moon ritual — only visible on a full or half moon */}
-        {moonSession && now && (
-          <section className="mb-6">
+        <div className="mt-8 space-y-3">
+          {isActive ? (
             <Link
-              to="/player/$id"
-              params={{ id: moonSession.id }}
-              className="group relative block overflow-hidden rounded-3xl ring-1 ring-border"
+              to="/home"
+              className="block rounded-full bg-primary px-6 py-3 text-center text-sm font-semibold text-primary-foreground"
             >
-              <img
-                src={moonSession.image}
-                alt={moonSession.title}
-                width={1024}
-                height={1024}
-                className="aspect-[16/9] w-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-5">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur">
-                  <Moon className="size-3" />
-                  {moonPhaseLabel[moonPhase(now)]} tonight
-                </span>
-                <h2 className="mt-2 text-xl font-semibold text-white">
-                  {moonSession.title}
-                </h2>
-                <p className="mt-1 text-xs text-white/80">
-                  {moonSession.durationMinutes} min special practice
-                </p>
-              </div>
+              Enter your practice
             </Link>
-          </section>
-        )}
-
-        {/* This week's new session */}
-        {weekly && (
-        <section className="mb-8">
-          <Link
-            to="/player/$id"
-            params={{ id: weekly.id }}
-            className="group flex items-center gap-4 rounded-3xl bg-secondary p-3 ring-1 ring-border"
-          >
-            <div className="size-20 flex-shrink-0 overflow-hidden rounded-2xl bg-muted">
-              <img
-                src={weekly.image}
-                alt={weekly.title}
-                width={1024}
-                height={1024}
-                loading="lazy"
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-            </div>
-            <div className="flex-1 pr-2">
-              <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
-                <Sparkles className="size-3" />
-                New this week
-              </span>
-              <h3 className="mt-1 text-base font-semibold text-foreground">
-                {weekly.title}
-              </h3>
-              <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
-                {weekly.description}
-              </p>
-            </div>
-          </Link>
-        </section>
-        )}
-
-
-        {/* Daily session */}
-        <section className="mb-10">
-          <Link
-            to="/player/$id"
-            params={{ id: daily.id }}
-            className="group relative block overflow-hidden rounded-3xl bg-card ring-1 ring-border"
-          >
-            <img
-              src={daily.image}
-              alt={daily.title}
-              width={1024}
-              height={1024}
-              className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 p-6">
-              <span className="inline-block rounded-full bg-primary/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary-foreground">
-                {daily.label}
-              </span>
-              <h2 className="mt-3 text-2xl font-semibold text-white">
-                {daily.title}
-              </h2>
-              <p className="mt-1 max-w-[28ch] text-sm text-white/80">
-                {daily.description}
-              </p>
-              <div className="mt-5 flex items-center gap-3">
-                <span className="flex size-10 items-center justify-center rounded-full bg-white text-foreground shadow-lg">
-                  <Play className="size-4 fill-current" />
-                </span>
-                <span className="text-sm font-medium text-white">
-                  {daily.durationMinutes} min
-                </span>
-              </div>
-            </div>
-          </Link>
-        </section>
-
-        {/* Recent sessions */}
-        <section>
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Recent sessions</h3>
-            <Link
-              to="/library"
-              className="text-sm font-medium text-primary hover:underline"
-            >
-              View all
-            </Link>
-          </div>
-          <div className="flex gap-4 overflow-x-auto pb-2 -mx-6 px-6 no-scrollbar">
-            {recent.map((session) => (
+          ) : (
+            <>
               <Link
-                key={session.id}
-                to="/player/$id"
-                params={{ id: session.id }}
-                className="flex w-40 flex-shrink-0 flex-col"
+                to="/pricing"
+                className="block rounded-full bg-primary px-6 py-3 text-center text-sm font-semibold text-primary-foreground"
               >
-                <div className="overflow-hidden rounded-2xl bg-muted ring-1 ring-border">
-                  <img
-                    src={session.image}
-                    alt={session.title}
-                    width={1024}
-                    height={1024}
-                    loading="lazy"
-                    className="aspect-square w-full object-cover"
-                  />
-                </div>
-                <h4 className="mt-3 text-sm font-semibold text-foreground">
-                  {session.title}
-                </h4>
-                <p className="text-xs text-muted-foreground">
-                  {session.durationMinutes} min · {session.label}
-                </p>
+                Become a member — {PLANS.monthly.price}/month
               </Link>
-            ))}
-          </div>
+              <Link
+                to="/auth"
+                search={{ next: "/pricing" }}
+                className="block rounded-full border border-border bg-card px-6 py-3 text-center text-sm font-semibold text-foreground"
+              >
+                {user ? "Continue" : "Create your account"}
+              </Link>
+            </>
+          )}
+        </div>
+
+        <p className="mt-4 text-center text-xs text-muted-foreground">
+          {PLANS.monthly.price} per month or {PLANS.yearly.price} per year. Cancel any time.
+          30-day money-back guarantee.
+        </p>
+
+        <section className="mt-14 space-y-4">
+          {highlights.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div key={item.title} className="rounded-3xl bg-card p-6 ring-1 ring-border">
+                <Icon className="size-5 text-primary" />
+                <h2 className="mt-3 text-base font-semibold text-foreground">{item.title}</h2>
+                <p className="mt-1 text-sm text-muted-foreground">{item.body}</p>
+              </div>
+            );
+          })}
         </section>
 
-        {/* Mini stats */}
-        <section className="mt-10 rounded-3xl bg-card p-6 ring-1 ring-border">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Practice this week
-          </h3>
-          <div className="mt-4 flex gap-2">
-            {stats.weeklyProgress.map((done, i) => {
-              const days = ["S", "M", "T", "W", "T", "F", "S"];
-              return (
-                <div key={i} className="flex-1 text-center">
-                  <div
-                    className={`h-8 rounded-full transition-colors ${
-                      done ? "bg-primary" : "bg-muted"
-                    }`}
-                  />
-                  <span className="mt-1 block text-[10px] text-muted-foreground">
-                    {days[i]}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-          <div className="mt-6 flex justify-between border-t border-border pt-4">
-            <div>
-              <p className="text-2xl font-semibold text-foreground">
-                {stats.totalMinutes}
-              </p>
-              <p className="text-xs text-muted-foreground">Total minutes</p>
-            </div>
-            <div className="text-right">
-              <p className="text-2xl font-semibold text-foreground">
-                {stats.sessionsCompleted}
-              </p>
-              <p className="text-xs text-muted-foreground">Sessions</p>
-            </div>
-          </div>
+        <section className="mt-10 rounded-3xl bg-secondary p-6 ring-1 ring-border">
+          <h2 className="text-lg font-semibold text-foreground">Membership</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Everything is included — there is no free tier and no ads.
+          </p>
+          <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+            {[
+              `${PLANS.monthly.price} per month`,
+              `${PLANS.yearly.price} per year (best value)`,
+              "Cancel any time from your account",
+              "30-day money-back guarantee",
+            ].map((line) => (
+              <li key={line} className="flex gap-2">
+                <Check className="mt-0.5 size-4 flex-shrink-0 text-primary" />
+                {line}
+              </li>
+            ))}
+          </ul>
+          <Link
+            to="/pricing"
+            className="mt-6 block rounded-full bg-primary px-6 py-3 text-center text-sm font-semibold text-primary-foreground"
+          >
+            See plans and join
+          </Link>
         </section>
       </main>
+      <SiteFooter />
     </div>
   );
 }

@@ -10,115 +10,221 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as LibraryRouteImport } from './routes/library'
-import { Route as MoonRouteImport } from './routes/moon'
-import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as RefundsRouteImport } from './routes/refunds'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
+import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
+import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
+import { Route as AuthenticatedMoonRouteImport } from './routes/_authenticated/moon'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as ApiTtsRouteImport } from './routes/api/tts'
-import { Route as PlayerIdRouteImport } from './routes/player.$id'
-import { Route as RecordIdRouteImport } from './routes/record.$id'
+import { Route as AuthenticatedPlayerIdRouteImport } from './routes/_authenticated/player.$id'
+import { Route as AuthenticatedRecordIdRouteImport } from './routes/_authenticated/record.$id'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LibraryRoute = LibraryRouteImport.update({
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RefundsRoute = RefundsRouteImport.update({
+  id: '/refunds',
+  path: '/refunds',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAccountRoute = AuthenticatedAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedLibraryRoute = AuthenticatedLibraryRouteImport.update({
   id: '/library',
   path: '/library',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const MoonRoute = MoonRouteImport.update({
+const AuthenticatedMoonRoute = AuthenticatedMoonRouteImport.update({
   id: '/moon',
   path: '/moon',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const ProfileRoute = ProfileRouteImport.update({
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const ApiTtsRoute = ApiTtsRouteImport.update({
   id: '/api/tts',
   path: '/api/tts',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PlayerIdRoute = PlayerIdRouteImport.update({
+const AuthenticatedPlayerIdRoute = AuthenticatedPlayerIdRouteImport.update({
   id: '/player/$id',
   path: '/player/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const RecordIdRoute = RecordIdRouteImport.update({
+const AuthenticatedRecordIdRoute = AuthenticatedRecordIdRouteImport.update({
   id: '/record/$id',
   path: '/record/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/library': typeof LibraryRoute
-  '/moon': typeof MoonRoute
-  '/profile': typeof ProfileRoute
+  '/auth': typeof AuthRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/refunds': typeof RefundsRoute
+  '/terms': typeof TermsRoute
+  '/account': typeof AuthenticatedAccountRoute
+  '/home': typeof AuthenticatedHomeRoute
+  '/library': typeof AuthenticatedLibraryRoute
+  '/moon': typeof AuthenticatedMoonRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/api/tts': typeof ApiTtsRoute
-  '/player/$id': typeof PlayerIdRoute
-  '/record/$id': typeof RecordIdRoute
+  '/player/$id': typeof AuthenticatedPlayerIdRoute
+  '/record/$id': typeof AuthenticatedRecordIdRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/library': typeof LibraryRoute
-  '/moon': typeof MoonRoute
-  '/profile': typeof ProfileRoute
+  '/auth': typeof AuthRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/refunds': typeof RefundsRoute
+  '/terms': typeof TermsRoute
+  '/account': typeof AuthenticatedAccountRoute
+  '/home': typeof AuthenticatedHomeRoute
+  '/library': typeof AuthenticatedLibraryRoute
+  '/moon': typeof AuthenticatedMoonRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/api/tts': typeof ApiTtsRoute
-  '/player/$id': typeof PlayerIdRoute
-  '/record/$id': typeof RecordIdRoute
+  '/player/$id': typeof AuthenticatedPlayerIdRoute
+  '/record/$id': typeof AuthenticatedRecordIdRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/library': typeof LibraryRoute
-  '/moon': typeof MoonRoute
-  '/profile': typeof ProfileRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/refunds': typeof RefundsRoute
+  '/terms': typeof TermsRoute
+  '/_authenticated/account': typeof AuthenticatedAccountRoute
+  '/_authenticated/home': typeof AuthenticatedHomeRoute
+  '/_authenticated/library': typeof AuthenticatedLibraryRoute
+  '/_authenticated/moon': typeof AuthenticatedMoonRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/api/tts': typeof ApiTtsRoute
-  '/player/$id': typeof PlayerIdRoute
-  '/record/$id': typeof RecordIdRoute
+  '/_authenticated/player/$id': typeof AuthenticatedPlayerIdRoute
+  '/_authenticated/record/$id': typeof AuthenticatedRecordIdRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
+    | '/pricing'
+    | '/privacy'
+    | '/refunds'
+    | '/terms'
+    | '/account'
+    | '/home'
     | '/library'
     | '/moon'
     | '/profile'
     | '/api/tts'
     | '/player/$id'
     | '/record/$id'
+    | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
+    | '/pricing'
+    | '/privacy'
+    | '/refunds'
+    | '/terms'
+    | '/account'
+    | '/home'
     | '/library'
     | '/moon'
     | '/profile'
     | '/api/tts'
     | '/player/$id'
     | '/record/$id'
+    | '/api/public/payments/webhook'
   id:
     | '__root__'
     | '/'
-    | '/library'
-    | '/moon'
-    | '/profile'
+    | '/_authenticated'
+    | '/auth'
+    | '/pricing'
+    | '/privacy'
+    | '/refunds'
+    | '/terms'
+    | '/_authenticated/account'
+    | '/_authenticated/home'
+    | '/_authenticated/library'
+    | '/_authenticated/moon'
+    | '/_authenticated/profile'
     | '/api/tts'
-    | '/player/$id'
-    | '/record/$id'
+    | '/_authenticated/player/$id'
+    | '/_authenticated/record/$id'
+    | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  LibraryRoute: typeof LibraryRoute
-  MoonRoute: typeof MoonRoute
-  ProfileRoute: typeof ProfileRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  PricingRoute: typeof PricingRoute
+  PrivacyRoute: typeof PrivacyRoute
+  RefundsRoute: typeof RefundsRoute
+  TermsRoute: typeof TermsRoute
   ApiTtsRoute: typeof ApiTtsRoute
-  PlayerIdRoute: typeof PlayerIdRoute
-  RecordIdRoute: typeof RecordIdRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -130,26 +236,82 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/library': {
-      id: '/library'
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/refunds': {
+      id: '/refunds'
+      path: '/refunds'
+      fullPath: '/refunds'
+      preLoaderRoute: typeof RefundsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/account': {
+      id: '/_authenticated/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AuthenticatedAccountRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/home': {
+      id: '/_authenticated/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof AuthenticatedHomeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/library': {
+      id: '/_authenticated/library'
       path: '/library'
       fullPath: '/library'
-      preLoaderRoute: typeof LibraryRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedLibraryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/moon': {
-      id: '/moon'
+    '/_authenticated/moon': {
+      id: '/_authenticated/moon'
       path: '/moon'
       fullPath: '/moon'
-      preLoaderRoute: typeof MoonRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedMoonRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/profile': {
-      id: '/profile'
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
       path: '/profile'
       fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/api/tts': {
       id: '/api/tts'
@@ -158,31 +320,63 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiTtsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/player/$id': {
-      id: '/player/$id'
+    '/_authenticated/player/$id': {
+      id: '/_authenticated/player/$id'
       path: '/player/$id'
       fullPath: '/player/$id'
-      preLoaderRoute: typeof PlayerIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedPlayerIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/record/$id': {
-      id: '/record/$id'
+    '/_authenticated/record/$id': {
+      id: '/_authenticated/record/$id'
       path: '/record/$id'
       fullPath: '/record/$id'
-      preLoaderRoute: typeof RecordIdRouteImport
+      preLoaderRoute: typeof AuthenticatedRecordIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAccountRoute: typeof AuthenticatedAccountRoute
+  AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
+  AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute
+  AuthenticatedMoonRoute: typeof AuthenticatedMoonRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedPlayerIdRoute: typeof AuthenticatedPlayerIdRoute
+  AuthenticatedRecordIdRoute: typeof AuthenticatedRecordIdRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAccountRoute: AuthenticatedAccountRoute,
+  AuthenticatedHomeRoute: AuthenticatedHomeRoute,
+  AuthenticatedLibraryRoute: AuthenticatedLibraryRoute,
+  AuthenticatedMoonRoute: AuthenticatedMoonRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedPlayerIdRoute: AuthenticatedPlayerIdRoute,
+  AuthenticatedRecordIdRoute: AuthenticatedRecordIdRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  LibraryRoute: LibraryRoute,
-  MoonRoute: MoonRoute,
-  ProfileRoute: ProfileRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  PricingRoute: PricingRoute,
+  PrivacyRoute: PrivacyRoute,
+  RefundsRoute: RefundsRoute,
+  TermsRoute: TermsRoute,
   ApiTtsRoute: ApiTtsRoute,
-  PlayerIdRoute: PlayerIdRoute,
-  RecordIdRoute: RecordIdRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
