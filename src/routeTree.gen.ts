@@ -22,6 +22,7 @@ import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedMoonRouteImport } from './routes/_authenticated/moon'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as ApiTtsRouteImport } from './routes/api/tts'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AuthenticatedPlayerIdRouteImport } from './routes/_authenticated/player.$id'
 import { Route as AuthenticatedRecordIdRouteImport } from './routes/_authenticated/record.$id'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
@@ -90,6 +91,11 @@ const ApiTtsRoute = ApiTtsRouteImport.update({
   path: '/api/tts',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/callback',
+  path: '/callback',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthenticatedPlayerIdRoute = AuthenticatedPlayerIdRouteImport.update({
   id: '/player/$id',
   path: '/player/$id',
@@ -109,7 +115,7 @@ const ApiPublicPaymentsWebhookRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
@@ -120,13 +126,14 @@ export interface FileRoutesByFullPath {
   '/moon': typeof AuthenticatedMoonRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/api/tts': typeof ApiTtsRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/player/$id': typeof AuthenticatedPlayerIdRoute
   '/record/$id': typeof AuthenticatedRecordIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/moon': typeof AuthenticatedMoonRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/api/tts': typeof ApiTtsRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/player/$id': typeof AuthenticatedPlayerIdRoute
   '/record/$id': typeof AuthenticatedRecordIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -145,7 +153,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/_authenticated/moon': typeof AuthenticatedMoonRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/api/tts': typeof ApiTtsRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/_authenticated/player/$id': typeof AuthenticatedPlayerIdRoute
   '/_authenticated/record/$id': typeof AuthenticatedRecordIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
     | '/moon'
     | '/profile'
     | '/api/tts'
+    | '/auth/callback'
     | '/player/$id'
     | '/record/$id'
     | '/api/public/payments/webhook'
@@ -192,6 +202,7 @@ export interface FileRouteTypes {
     | '/moon'
     | '/profile'
     | '/api/tts'
+    | '/auth/callback'
     | '/player/$id'
     | '/record/$id'
     | '/api/public/payments/webhook'
@@ -210,6 +221,7 @@ export interface FileRouteTypes {
     | '/_authenticated/moon'
     | '/_authenticated/profile'
     | '/api/tts'
+    | '/auth/callback'
     | '/_authenticated/player/$id'
     | '/_authenticated/record/$id'
     | '/api/public/payments/webhook'
@@ -218,7 +230,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthRoute: typeof AuthRoute
+  AuthRoute: typeof AuthRouteWithChildren
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
   RefundsRoute: typeof RefundsRoute
@@ -320,6 +332,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiTtsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_authenticated/player/$id': {
       id: '/_authenticated/player/$id'
       path: '/player/$id'
@@ -367,10 +386,20 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface AuthRouteChildren {
+  AuthCallbackRoute: typeof AuthCallbackRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthCallbackRoute: AuthCallbackRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AuthRoute: AuthRoute,
+  AuthRoute: AuthRouteWithChildren,
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
   RefundsRoute: RefundsRoute,
