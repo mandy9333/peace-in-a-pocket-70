@@ -2,6 +2,11 @@ import sessionMorningAsset from "@/assets/session-morning.jpg.asset.json";
 import sessionSleepAsset from "@/assets/session-sleep.jpg.asset.json";
 import sessionFocusAsset from "@/assets/session-focus.jpg.asset.json";
 import sessionCalmAsset from "@/assets/session-calm.jpg.asset.json";
+import sessionFullMoon from "@/assets/session-full-moon.jpg";
+import sessionHalfMoon from "@/assets/session-half-moon.jpg";
+import sessionWeeklyA from "@/assets/session-weekly-a.jpg";
+import sessionWeeklyB from "@/assets/session-weekly-b.jpg";
+import { activeMoonRitual, weekIndex } from "@/lib/moon";
 
 const sessionMorning = sessionMorningAsset.url;
 const sessionSleep = sessionSleepAsset.url;
