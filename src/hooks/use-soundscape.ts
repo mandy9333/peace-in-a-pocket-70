@@ -48,7 +48,10 @@ export function useSoundscape(category: MeditationCategory) {
     }
   }, [volume, muted]);
 
-  const target = muted ? 0 : volume * 0.25;
+  // While guidance is speaking the ambient bed dips instead of stopping,
+  // so music keeps flowing in the pauses between words.
+  const [ducked, setDucked] = useState(false);
+  const target = muted ? 0 : volume * 0.25 * (ducked ? 0.45 : 1);
 
   const build = useCallback(() => {
     const AudioCtor =
