@@ -18,6 +18,12 @@ export function SiteFooter() {
           Privacy Notice
         </Link>
       </nav>
+      <a
+        href="mailto:Mandygudeman@gmail.com"
+        className="mt-4 inline-block text-xs text-primary hover:underline"
+      >
+        Support: Mandygudeman@gmail.com
+      </a>
       <p className="mt-4 text-[11px] text-muted-foreground">
         Our order process is conducted by our online reseller Paddle.com. Paddle.com is the
         Merchant of Record for all our orders.

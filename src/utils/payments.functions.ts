@@ -65,15 +65,15 @@ export const createPortalSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
-    const { data: sub } = await supabase
+    const { data: rows } = await supabase
       .from("subscriptions")
       .select("paddle_customer_id, paddle_subscription_id, environment")
       .eq("user_id", userId)
       .in("status", ["active", "trialing", "past_due", "canceled"])
       .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
+      .limit(10);
 
+    const sub = rows?.[0];
     if (!sub) throw new Error("No membership found");
 
     const { getPaddleClient } = await import("@/lib/paddle.server");

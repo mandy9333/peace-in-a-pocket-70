@@ -121,7 +121,8 @@ function PrivacyPage() {
               Depending on where you live, you may have the right to access your data, correct it,
               delete it, restrict or object to its use, receive a portable copy, and withdraw
               consent. If you are in the UK or EEA you may also complain to your local data
-              protection authority. Contact us through the support link in the app and we will
+               protection authority. Contact us at{" "}
+               <a href="mailto:Mandygudeman@gmail.com" className="underline">Mandygudeman@gmail.com</a> and we will
               respond within one month.
             </p>
           </section>

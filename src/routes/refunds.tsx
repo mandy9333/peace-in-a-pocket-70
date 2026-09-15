@@ -54,7 +54,8 @@ function RefundPage() {
               >
                 paddle.net
               </a>{" "}
-              with the email address you used at checkout, or contact us through the support link
+               with the email address you used at checkout, or contact us at{" "}
+               <a href="mailto:Mandygudeman@gmail.com" className="underline">Mandygudeman@gmail.com</a>
               in the app and we'll arrange it for you. Refunds are returned to the original
               payment method, normally within 5–10 business days of approval.
             </p>
