@@ -9,6 +9,9 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
 import { Route as AuthenticatedMoonRouteImport } from './routes/_authenticated/moon'
@@ -18,25 +21,39 @@ import { Route as AuthenticatedPlayerIdRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedRecordIdRouteImport } from './routes/_authenticated/record.$id'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
-const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
-  id: '/_authenticated/home',
-  path: '/home',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedLibraryRoute = AuthenticatedLibraryRouteImport.update({
-  id: '/_authenticated/library',
+  id: '/library',
   path: '/library',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedMoonRoute = AuthenticatedMoonRouteImport.update({
-  id: '/_authenticated/moon',
+  id: '/moon',
   path: '/moon',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
-  id: '/_authenticated/profile',
+  id: '/profile',
   path: '/profile',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const ApiTtsRoute = ApiTtsRouteImport.update({
   id: '/api/tts',
@@ -44,14 +61,14 @@ const ApiTtsRoute = ApiTtsRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedPlayerIdRoute = AuthenticatedPlayerIdRouteImport.update({
-  id: '/_authenticated/player/$id',
+  id: '/player/$id',
   path: '/player/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedRecordIdRoute = AuthenticatedRecordIdRouteImport.update({
-  id: '/_authenticated/record/$id',
+  id: '/record/$id',
   path: '/record/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
@@ -61,6 +78,9 @@ const ApiPublicPaymentsWebhookRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/pricing': typeof PricingRoute
   '/home': typeof AuthenticatedHomeRoute
   '/library': typeof AuthenticatedLibraryRoute
   '/moon': typeof AuthenticatedMoonRoute
@@ -71,6 +91,9 @@ export interface FileRoutesByFullPath {
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/pricing': typeof PricingRoute
   '/home': typeof AuthenticatedHomeRoute
   '/library': typeof AuthenticatedLibraryRoute
   '/moon': typeof AuthenticatedMoonRoute
@@ -82,6 +105,9 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/pricing': typeof PricingRoute
   '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRoute
   '/_authenticated/moon': typeof AuthenticatedMoonRoute
@@ -94,6 +120,9 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
+    | '/auth'
+    | '/pricing'
     | '/home'
     | '/library'
     | '/moon'
@@ -104,6 +133,9 @@ export interface FileRouteTypes {
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
+    | '/auth'
+    | '/pricing'
     | '/home'
     | '/library'
     | '/moon'
@@ -114,6 +146,9 @@ export interface FileRouteTypes {
     | '/api/public/payments/webhook'
   id:
     | '__root__'
+    | '/_authenticated'
+    | '/auth'
+    | '/pricing'
     | '/_authenticated/home'
     | '/_authenticated/library'
     | '/_authenticated/moon'
@@ -125,45 +160,63 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
-  AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute
-  AuthenticatedMoonRoute: typeof AuthenticatedMoonRoute
-  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  PricingRoute: typeof PricingRoute
   ApiTtsRoute: typeof ApiTtsRoute
-  AuthenticatedPlayerIdRoute: typeof AuthenticatedPlayerIdRoute
-  AuthenticatedRecordIdRoute: typeof AuthenticatedRecordIdRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/home': {
       id: '/_authenticated/home'
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof AuthenticatedHomeRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/library': {
       id: '/_authenticated/library'
       path: '/library'
       fullPath: '/library'
       preLoaderRoute: typeof AuthenticatedLibraryRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/moon': {
       id: '/_authenticated/moon'
       path: '/moon'
       fullPath: '/moon'
       preLoaderRoute: typeof AuthenticatedMoonRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/profile': {
       id: '/_authenticated/profile'
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof AuthenticatedProfileRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/api/tts': {
       id: '/api/tts'
@@ -177,14 +230,14 @@ declare module '@tanstack/react-router' {
       path: '/player/$id'
       fullPath: '/player/$id'
       preLoaderRoute: typeof AuthenticatedPlayerIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/record/$id': {
       id: '/_authenticated/record/$id'
       path: '/record/$id'
       fullPath: '/record/$id'
       preLoaderRoute: typeof AuthenticatedRecordIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
@@ -196,14 +249,32 @@ declare module '@tanstack/react-router' {
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
+  AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute
+  AuthenticatedMoonRoute: typeof AuthenticatedMoonRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedPlayerIdRoute: typeof AuthenticatedPlayerIdRoute
+  AuthenticatedRecordIdRoute: typeof AuthenticatedRecordIdRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRoute,
   AuthenticatedMoonRoute: AuthenticatedMoonRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
-  ApiTtsRoute: ApiTtsRoute,
   AuthenticatedPlayerIdRoute: AuthenticatedPlayerIdRoute,
   AuthenticatedRecordIdRoute: AuthenticatedRecordIdRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  PricingRoute: PricingRoute,
+  ApiTtsRoute: ApiTtsRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
