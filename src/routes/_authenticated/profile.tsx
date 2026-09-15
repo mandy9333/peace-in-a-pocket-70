@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMeditationStats } from "@/hooks/use-meditation-stats";
 import { Calendar, Clock, Flame, Award } from "lucide-react";
 import profileBg from "@/assets/profile-bg.jpg";
