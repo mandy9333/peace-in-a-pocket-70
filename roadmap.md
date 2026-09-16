@@ -34,9 +34,9 @@
 - [x] Linked from Account page support section + site footer
 
 ## Creator video (user request, Sep 16)
-- [ ] Draft personal message from Mandy (~45s of speech)
-- [ ] Generate 5 calm video scenes + TTS narration, stitch into 45s video
-- [ ] Add "A note from Mandy" video section on welcome page
+- [x] Draft personal message from Mandy (~45s of speech)
+- [x] Generate 5 calm video scenes + TTS narration, stitch into 45s video
+- [x] Add "A note from Mandy" video section on welcome page
 
 ## Later
 - [ ] Go live: legal pages (terms, refund, privacy) + identity verification
