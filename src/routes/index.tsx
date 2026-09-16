@@ -5,6 +5,7 @@ import { PLANS } from "@/lib/paddle";
 import { SiteFooter } from "@/components/site-footer";
 import { PaymentTestModeBanner } from "@/components/payment-test-mode-banner";
 import creatorVideo from "@/assets/mandys-creator-message.mp4.asset.json";
+import creatorVideoPoster from "@/assets/mandys-creator-message-poster.jpg.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -76,6 +77,7 @@ function Landing() {
             controls
             playsInline
             preload="metadata"
+            poster={creatorVideoPoster.url}
             aria-label="A personal welcome message from Mandy, creator of Stillpoint"
           >
             <source src={creatorVideo.url} type="video/mp4" />
