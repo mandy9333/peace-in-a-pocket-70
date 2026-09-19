@@ -4,8 +4,7 @@ import { useSubscription } from "@/hooks/use-subscription";
 import { PLANS } from "@/lib/paddle";
 import { SiteFooter } from "@/components/site-footer";
 import { PaymentTestModeBanner } from "@/components/payment-test-mode-banner";
-import creatorVideo from "@/assets/mandys-creator-message.mp4.asset.json";
-import creatorVideoPoster from "@/assets/mandys-creator-message-poster.jpg.asset.json";
+import { CreatorVideo } from "@/components/creator-video";
 
 export const Route = createFileRoute("/")({
   head: () => ({
