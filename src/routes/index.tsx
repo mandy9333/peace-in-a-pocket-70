@@ -64,25 +64,7 @@ function Landing() {
           follow the moon.
         </p>
 
-        <section className="mt-7" aria-labelledby="creator-video-title">
-          <div className="mb-3 flex items-baseline justify-between gap-4">
-            <h2 id="creator-video-title" className="text-base font-semibold text-foreground">
-              A note from Mandy
-            </h2>
-            <span className="text-xs text-muted-foreground">45 seconds</span>
-          </div>
-          <video
-            className="aspect-video w-full rounded-lg bg-secondary object-cover ring-1 ring-border"
-            controls
-            playsInline
-            preload="metadata"
-            poster={creatorVideoPoster.url}
-            aria-label="A personal welcome message from Mandy, creator of Stillpoint"
-          >
-            <source src={creatorVideo.url} type="video/mp4" />
-            Your browser does not support video playback.
-          </video>
-        </section>
+        <CreatorVideo />
 
         <div className="mt-8 space-y-3">
           {isActive ? (
