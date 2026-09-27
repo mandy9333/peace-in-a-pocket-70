@@ -1,6 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Mic, Square, Play, Trash2, Volume2, VolumeX } from "lucide-react";
-import { cueKey, deleteRecording, getRecording, saveRecording } from "@/lib/voice-recordings";
+import { Mic, Square, Play, Trash2, Volume2, VolumeX, Users, Loader2 } from "lucide-react";
+import {
+  blobToBase64,
+  cueKey,
+  deleteRecording,
+  getRecording,
+  saveRecording,
+} from "@/lib/voice-recordings";
+import {
+  clearPublishedCache,
+  getPublishedClipUrl,
+  loadPublishedClips,
+} from "@/lib/published-voice";
+import { publishVoiceClip, unpublishVoiceClip } from "@/utils/voice.functions";
+import { useVoiceOwner } from "@/hooks/use-voice-owner";
 import creatorVideo from "@/assets/mandys-creator-message.mp4.asset.json";
 import creatorVideoPoster from "@/assets/mandys-creator-message-poster.jpg.asset.json";
 
@@ -10,8 +23,9 @@ const SCRIPT =
   "Hi, I'm Mandy. I created Stillpoint because I needed a quiet place to come back to myself, and I couldn't find one that felt simple enough to actually use every day. These sessions are short and gentle, made for real life: a morning reset, a way to let stress go, a moment of balance before bed. Every practice here is one I use myself. So I'd love for you to slow down with me for a few minutes each day. Find your still point. It's closer than you think.";
 
 /**
- * The welcome-page creator video. When Mandy has recorded the message in her
- * own voice, the video plays muted and her recording plays in sync.
+ * The welcome-page creator video. When Mandy's own recording is published,
+ * every visitor hears it: the video plays muted and her voice plays in sync.
+ * An unpublished recording still plays for her on her own device.
  */
 export function CreatorVideo() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -20,19 +34,33 @@ export function CreatorVideo() {
   const streamRef = useRef<MediaStream | null>(null);
   const urlRef = useRef<string | null>(null);
   const [ownVoice, setOwnVoice] = useState<string | null>(null);
+  const [hasLocal, setHasLocal] = useState(false);
+  const [published, setPublished] = useState(false);
+  const [publishing, setPublishing] = useState(false);
   const [recording, setRecording] = useState(false);
   const [showScript, setShowScript] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isOwner = useVoiceOwner();
 
   useEffect(() => {
     let cancelled = false;
-    void getRecording(CREATOR_KEY).then((blob) => {
-      if (!cancelled && blob) {
+    void (async () => {
+      // Mandy's published voice takes priority so every visitor hears it.
+      const publishedUrl = await getPublishedClipUrl(CREATOR_KEY);
+      if (cancelled) return;
+      if (publishedUrl) {
+        setPublished(true);
+        setOwnVoice(publishedUrl);
+      }
+      const blob = await getRecording(CREATOR_KEY).catch(() => null);
+      if (cancelled || !blob) return;
+      setHasLocal(true);
+      if (!publishedUrl) {
         const url = URL.createObjectURL(blob);
         urlRef.current = url;
         setOwnVoice(url);
       }
-    });
+    })();
     return () => {
       cancelled = true;
       streamRef.current?.getTracks().forEach((t) => t.stop());
@@ -41,14 +69,14 @@ export function CreatorVideo() {
     };
   }, []);
 
-  // Mute the embedded narration and play Mandy's own recording in sync.
+  // Mute the embedded narration and play Mandy's voice in sync.
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !ownVoice) return;
     video.muted = true;
     const onPlay = () => {
       let audio = audioRef.current;
-      if (!audio) {
+      if (!audio || audio.src !== ownVoice) {
         audio = new Audio(ownVoice);
         audioRef.current = audio;
       }
@@ -88,6 +116,7 @@ export function CreatorVideo() {
             if (urlRef.current) URL.revokeObjectURL(urlRef.current);
             const url = URL.createObjectURL(blob);
             urlRef.current = url;
+            setHasLocal(true);
             setOwnVoice(url);
           } catch {
             setError("Could not save that recording.");
@@ -117,19 +146,73 @@ export function CreatorVideo() {
     void audio.play().catch(() => setError("Could not play that recording."));
   }, [ownVoice]);
 
+  const share = useCallback(async () => {
+    setError(null);
+    setPublishing(true);
+    try {
+      const blob = await getRecording(CREATOR_KEY);
+      if (!blob) throw new Error("Record the message first.");
+      await publishVoiceClip({
+        data: {
+          cueKey: CREATOR_KEY,
+          audioBase64: await blobToBase64(blob),
+          mimeType: blob.type || "audio/webm",
+          isPublic: true,
+        },
+      });
+      clearPublishedCache();
+      await loadPublishedClips(true);
+      const url = await getPublishedClipUrl(CREATOR_KEY);
+      setPublished(true);
+      if (url) setOwnVoice(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not share your voice.");
+    } finally {
+      setPublishing(false);
+    }
+  }, []);
+
+  const stopSharing = useCallback(async () => {
+    setError(null);
+    setPublishing(true);
+    try {
+      await unpublishVoiceClip({ data: { cueKey: CREATOR_KEY } });
+      clearPublishedCache();
+      setPublished(false);
+      const blob = await getRecording(CREATOR_KEY).catch(() => null);
+      audioRef.current?.pause();
+      audioRef.current = null;
+      if (blob) {
+        if (urlRef.current) URL.revokeObjectURL(urlRef.current);
+        const url = URL.createObjectURL(blob);
+        urlRef.current = url;
+        setOwnVoice(url);
+      } else {
+        setOwnVoice(null);
+        if (videoRef.current) videoRef.current.muted = false;
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not stop sharing.");
+    } finally {
+      setPublishing(false);
+    }
+  }, []);
+
   const remove = useCallback(async () => {
     try {
+      if (published) await stopSharing();
       await deleteRecording(CREATOR_KEY);
       audioRef.current?.pause();
       audioRef.current = null;
       if (urlRef.current) URL.revokeObjectURL(urlRef.current);
       urlRef.current = null;
       if (videoRef.current) videoRef.current.muted = false;
+      setHasLocal(false);
       setOwnVoice(null);
     } catch {
       setError("Could not delete that recording.");
     }
-  }, []);
+  }, [published, stopSharing]);
 
   return (
     <section className="mt-7" aria-labelledby="creator-video-title">
@@ -152,79 +235,102 @@ export function CreatorVideo() {
         Your browser does not support video playback.
       </video>
 
-      <div className="mt-3 rounded-2xl bg-card p-4 ring-1 ring-border">
-        {ownVoice ? (
-          <div className="space-y-3">
-            <p className="flex items-center gap-2 text-sm font-medium text-foreground">
-              <Volume2 className="size-4 text-primary" />
-              Your voice plays with this video
-            </p>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={preview}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-foreground"
-              >
-                <Play className="size-3.5" /> Preview
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowScript(true);
-                  void startRecording();
-                }}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-foreground"
-              >
-                <Mic className="size-3.5" /> Re-record
-              </button>
-              <button
-                type="button"
-                onClick={() => void remove()}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground"
-              >
-                <Trash2 className="size-3.5" /> Use original
-              </button>
+      {isOwner ? (
+        <div className="mt-3 rounded-2xl bg-card p-4 ring-1 ring-border">
+          {ownVoice ? (
+            <div className="space-y-3">
+              <p className="flex items-center gap-2 text-sm font-medium text-foreground">
+                {published ? (
+                  <Users className="size-4 text-primary" />
+                ) : (
+                  <Volume2 className="size-4 text-primary" />
+                )}
+                {published
+                  ? "Everyone who visits hears your voice with this video"
+                  : "Your voice plays with this video on this device"}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={preview}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-foreground"
+                >
+                  <Play className="size-3.5" /> Preview
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void (published ? stopSharing() : share())}
+                  disabled={publishing || (!published && !hasLocal)}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground disabled:opacity-50"
+                >
+                  {publishing ? (
+                    <Loader2 className="size-3.5 animate-spin" />
+                  ) : (
+                    <Users className="size-3.5" />
+                  )}
+                  {published ? "Stop sharing" : "Share with everyone"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowScript(true);
+                    void startRecording();
+                  }}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-foreground"
+                >
+                  <Mic className="size-3.5" /> Re-record
+                </button>
+                {hasLocal ? (
+                  <button
+                    type="button"
+                    onClick={() => void remove()}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground"
+                  >
+                    <Trash2 className="size-3.5" /> Use original
+                  </button>
+                ) : null}
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            <p className="flex items-center gap-2 text-sm text-muted-foreground">
-              <VolumeX className="size-4 text-primary" />
-              Record the message in your own voice — it plays over the video instead of the
-              standard narration.
+          ) : (
+            <div className="space-y-3">
+              <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                <VolumeX className="size-4 text-primary" />
+                Record the message in your own voice, then share it so everyone hears you
+                instead of the standard narration.
+              </p>
+              {recording ? (
+                <button
+                  type="button"
+                  onClick={stopRecording}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
+                >
+                  <Square className="size-3.5" /> Stop recording
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowScript(true);
+                    void startRecording();
+                  }}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
+                >
+                  <Mic className="size-3.5" /> Record in my voice
+                </button>
+              )}
+            </div>
+          )}
+          {showScript && (
+            <p className="mt-3 rounded-xl bg-secondary p-3 text-xs leading-relaxed text-muted-foreground">
+              Read this slowly and warmly: “{SCRIPT}”
             </p>
-            {recording ? (
-              <button
-                type="button"
-                onClick={stopRecording}
-                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
-              >
-                <Square className="size-3.5" /> Stop recording
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => {
-                  setShowScript(true);
-                  void startRecording();
-                }}
-                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
-              >
-                <Mic className="size-3.5" /> Record in my voice
-              </button>
-            )}
-          </div>
-        )}
-        {showScript && (
-          <p className="mt-3 rounded-xl bg-secondary p-3 text-xs leading-relaxed text-muted-foreground">
-            Read this slowly and warmly: “{SCRIPT}”
-          </p>
-        )}
-        {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
-        <p className="mt-2 text-[11px] text-muted-foreground">
-          Your recording stays on this device — nothing is uploaded.
-        </p>
-      </div>
+          )}
+          {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
+          {recording ? (
+            <p className="mt-2 text-[11px] text-muted-foreground">Recording…</p>
+          ) : null}
+        </div>
+      ) : null}
     </section>
   );
 }
