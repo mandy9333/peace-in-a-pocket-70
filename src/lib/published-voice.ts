@@ -16,15 +16,16 @@ const urlCache = new Map<string, string>();
 /** cue key → is_public, for every clip published so far. */
 export function loadPublishedClips(force = false): Promise<Map<string, boolean>> {
   if (!publishedCache || force) {
-    publishedCache = supabase
-      .from("voice_clips")
-      .select("cue_key, is_public")
-      .then(({ data }) => {
-        const map = new Map<string, boolean>();
+    publishedCache = (async () => {
+      const map = new Map<string, boolean>();
+      try {
+        const { data } = await supabase.from("voice_clips").select("cue_key, is_public");
         for (const row of data ?? []) map.set(row.cue_key, row.is_public);
-        return map;
-      })
-      .catch(() => new Map<string, boolean>());
+      } catch {
+        /* no published clips available */
+      }
+      return map;
+    })();
   }
   return publishedCache;
 }
