@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getRecording } from "@/lib/voice-recordings";
+import { getPublishedClipUrl } from "@/lib/published-voice";
 import { supabase } from "@/integrations/supabase/client";
 
 const STORAGE_KEY = "stillpoint.voice";
@@ -51,8 +52,17 @@ export function useVoiceover() {
     const cacheId = key ?? text;
     const cached = cacheRef.current.get(cacheId);
     if (cached) return cached;
-    // Prefer the user's own recording for this cue when one exists.
+    // Prefer Mandy's published voice for this cue, then a local recording.
     if (key) {
+      try {
+        const published = await getPublishedClipUrl(key);
+        if (published) {
+          cacheRef.current.set(cacheId, published);
+          return published;
+        }
+      } catch {
+        /* fall through */
+      }
       try {
         const own = await getRecording(key);
         if (own) {
