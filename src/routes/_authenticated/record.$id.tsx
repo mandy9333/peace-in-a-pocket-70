@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { getSessionById, formatTime } from "@/lib/meditation";
 import { useVoiceRecorder } from "@/hooks/use-voice-recorder";
-import { ArrowLeft, Mic, Square, Play, Pause, Trash2, Check } from "lucide-react";
+import { ArrowLeft, Mic, Square, Play, Pause, Trash2, Check, Users, Loader2 } from "lucide-react";
+import { useVoiceOwner } from "@/hooks/use-voice-owner";
 
 export const Route = createFileRoute("/_authenticated/record/$id")({
   head: ({ params }) => {
@@ -31,6 +32,7 @@ function RecordStudio() {
   const session = getSessionById(id)!;
   const navigate = useNavigate();
   const recorder = useVoiceRecorder(session.id);
+  const isOwner = useVoiceOwner();
   const total = session.voiceover.length;
 
   return (
@@ -53,9 +55,11 @@ function RecordStudio() {
           Your voice for {session.title}
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Read each line aloud in your own voice. Recordings stay on this device
-          and replace the generated narration during the session. Any line you
-          skip keeps the standard voice.
+          Read each line aloud in your own voice. Each recording replaces the
+          generated narration during the session, and any line you skip keeps
+          the standard voice.{isOwner
+            ? " Tap Share with members to publish a line so everyone who joins hears you."
+            : " Recordings stay on this device."}
         </p>
 
         {recorder.error ? (
@@ -67,6 +71,7 @@ function RecordStudio() {
             const isRecording = recorder.recordingIndex === index;
             const isPlaying = recorder.playingIndex === index;
             const recorded = recorder.has(index);
+            const published = recorder.isPublished(index);
             return (
               <li
                 key={cue.at}
@@ -76,7 +81,11 @@ function RecordStudio() {
                   <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                     Cue {index + 1} · at {formatTime(cue.at)}
                   </span>
-                  {recorded ? (
+                  {published ? (
+                    <span className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
+                      <Users className="size-3" /> heard by members
+                    </span>
+                  ) : recorded ? (
                     <span className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
                       <Check className="size-3" /> yours
                     </span>
@@ -135,6 +144,24 @@ function RecordStudio() {
                       >
                         <Trash2 className="size-4" />
                       </button>
+                      {isOwner ? (
+                        <button
+                          onClick={() =>
+                            void (published
+                              ? recorder.unpublish(index)
+                              : recorder.publish(index))
+                          }
+                          disabled={recorder.publishingIndex === index}
+                          className="ml-auto flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[12px] font-medium text-foreground disabled:opacity-50"
+                        >
+                          {recorder.publishingIndex === index ? (
+                            <Loader2 className="size-3.5 animate-spin" />
+                          ) : (
+                            <Users className="size-3.5" />
+                          )}
+                          {published ? "Stop sharing" : "Share with members"}
+                        </button>
+                      ) : null}
                     </>
                   ) : null}
                 </div>
