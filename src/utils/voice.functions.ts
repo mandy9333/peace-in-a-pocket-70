@@ -1,10 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
-import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { isEntitled } from "@/lib/entitlement";
-import type { Database } from "@/integrations/supabase/types";
 
 const BUCKET = "voice-overs";
 /** The creator account allowed to publish voiceovers for every member. */
@@ -152,6 +150,3 @@ export const getMemberVoiceClipUrls = createServerFn({ method: "POST" })
     }
     return { urls };
   });
-
-/** Unused placeholder kept out of the client bundle. */
-export type VoiceClipClient = ReturnType<typeof createClient<Database>>;
