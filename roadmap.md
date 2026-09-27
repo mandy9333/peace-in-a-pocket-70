@@ -38,6 +38,13 @@
 - [x] Generate 5 calm video scenes + TTS narration, stitch into 45s video
 - [x] Add "A note from Mandy" video section on welcome page
 
+## Shared creator voice (user request, Sep 19)
+- [x] Creator/owner role table + owner check (creator account: mandygudeman@gmail.com)
+- [x] Cloud storage for published voiceovers + clip catalogue
+- [x] Publish/unpublish controls in the recording studio and the welcome-page note
+- [x] Sessions play the published voice for every member, local recording next, generated voice last
+- [ ] Mandy records and shares each session line from her account
+
 ## Later
 - [ ] Go live: legal pages (terms, refund, privacy) + identity verification
 - [ ] Moon session photos awaiting user uploads
