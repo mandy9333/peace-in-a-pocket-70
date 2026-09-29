@@ -108,21 +108,10 @@ function AuthPage() {
             : "Sign in to continue your practice."}
         </p>
 
-        <button
-          type="button"
-          onClick={handleGoogle}
-          className="mt-8 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
-        >
-          Continue with Google
-        </button>
-
-        <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground">
-          <span className="h-px flex-1 bg-border" />
-          or use your email
-          <span className="h-px flex-1 bg-border" />
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form onSubmit={handleSubmit} className="mt-8 space-y-3">
+          <label className="block text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Your email
+          </label>
           <input
             type="email"
             required
@@ -132,6 +121,9 @@ function AuthPage() {
             placeholder="you@example.com"
             className="w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary"
           />
+          <label className="block text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Choose a password
+          </label>
           <input
             type="password"
             required
@@ -139,17 +131,31 @@ function AuthPage() {
             autoComplete={mode === "signup" ? "new-password" : "current-password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
+            placeholder="Password (at least 6 characters)"
             className="w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary"
           />
           <button
             type="submit"
             disabled={busy}
-            className="w-full rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground disabled:opacity-60"
+            className="w-full rounded-full bg-primary px-6 py-3.5 text-base font-semibold text-primary-foreground disabled:opacity-60"
           >
             {busy ? "One moment…" : mode === "signup" ? "Create account" : "Sign in"}
           </button>
         </form>
+
+        <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground">
+          <span className="h-px flex-1 bg-border" />
+          or continue with Google
+          <span className="h-px flex-1 bg-border" />
+        </div>
+
+        <button
+          type="button"
+          onClick={handleGoogle}
+          className="w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
+        >
+          Continue with Google
+        </button>
 
         <button
           type="button"
