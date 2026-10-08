@@ -1,7 +1,19 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { getSessionById, formatTime } from "@/lib/meditation";
 import { useVoiceRecorder } from "@/hooks/use-voice-recorder";
-import { ArrowLeft, Mic, Square, Play, Pause, Trash2, Check, Users, Loader2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Mic,
+  Square,
+  Play,
+  Pause,
+  Trash2,
+  Check,
+  Users,
+  Loader2,
+  Cloud,
+  CloudOff,
+} from "lucide-react";
 import { useVoiceOwner } from "@/hooks/use-voice-owner";
 
 export const Route = createFileRoute("/_authenticated/record/$id")({
@@ -31,8 +43,8 @@ function RecordStudio() {
   const { id } = Route.useParams();
   const session = getSessionById(id)!;
   const navigate = useNavigate();
-  const recorder = useVoiceRecorder(session.id);
   const isOwner = useVoiceOwner();
+  const recorder = useVoiceRecorder(session.id, { cloudSave: isOwner });
   const total = session.voiceover.length;
 
   return (
@@ -55,10 +67,10 @@ function RecordStudio() {
           Your voice for {session.title}
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Read each line aloud in your own voice. Each recording replaces the
-          generated narration during the session, and any line you skip keeps
-          the standard voice.{isOwner
-            ? " Tap Share with members to publish a line so everyone who joins hears you."
+          Read each line aloud in your own voice. Each recording replaces the generated narration
+          during the session, and any line you skip keeps the standard voice.
+          {isOwner
+            ? " Your takes back up to the cloud automatically, so they're safe on any device. Tap Share with members to publish a line so everyone who joins hears you."
             : " Recordings stay on this device."}
         </p>
 
@@ -73,10 +85,7 @@ function RecordStudio() {
             const recorded = recorder.has(index);
             const published = recorder.isPublished(index);
             return (
-              <li
-                key={cue.at}
-                className="rounded-2xl bg-card p-4 ring-1 ring-border"
-              >
+              <li key={cue.at} className="rounded-2xl bg-card p-4 ring-1 ring-border">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                     Cue {index + 1} · at {formatTime(cue.at)}
@@ -90,22 +99,31 @@ function RecordStudio() {
                       <Check className="size-3" /> yours
                     </span>
                   ) : null}
+                  {isOwner && recorder.cloudStatus(index) === "saving" ? (
+                    <span className="flex items-center gap-1 text-[10px] font-medium text-muted-foreground">
+                      <Loader2 className="size-3 animate-spin" /> saving…
+                    </span>
+                  ) : null}
+                  {isOwner && recorder.cloudStatus(index) === "saved" ? (
+                    <span className="flex items-center gap-1 text-[10px] font-medium text-muted-foreground">
+                      <Cloud className="size-3" /> cloud
+                    </span>
+                  ) : null}
+                  {isOwner && recorder.cloudStatus(index) === "error" ? (
+                    <span className="flex items-center gap-1 text-[10px] font-medium text-destructive">
+                      <CloudOff className="size-3" /> backup failed
+                    </span>
+                  ) : null}
                 </div>
 
-                <p className="mt-3 text-[15px] leading-relaxed text-foreground">
-                  {cue.text}
-                </p>
+                <p className="mt-3 text-[15px] leading-relaxed text-foreground">{cue.text}</p>
 
                 <div className="mt-4 flex items-center gap-2">
                   <button
                     onClick={() =>
-                      isRecording
-                        ? recorder.stopRecording()
-                        : void recorder.startRecording(index)
+                      isRecording ? recorder.stopRecording() : void recorder.startRecording(index)
                     }
-                    disabled={
-                      recorder.recordingIndex !== null && !isRecording
-                    }
+                    disabled={recorder.recordingIndex !== null && !isRecording}
                     className="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-transform active:scale-95 disabled:opacity-40"
                   >
                     {isRecording ? (
@@ -124,9 +142,7 @@ function RecordStudio() {
                     <>
                       <button
                         onClick={() =>
-                          isPlaying
-                            ? recorder.stopPlayback()
-                            : void recorder.play(index)
+                          isPlaying ? recorder.stopPlayback() : void recorder.play(index)
                         }
                         className="flex size-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:text-foreground"
                         aria-label={isPlaying ? "Stop preview" : "Play recording"}
@@ -147,9 +163,7 @@ function RecordStudio() {
                       {isOwner ? (
                         <button
                           onClick={() =>
-                            void (published
-                              ? recorder.unpublish(index)
-                              : recorder.publish(index))
+                            void (published ? recorder.unpublish(index) : recorder.publish(index))
                           }
                           disabled={recorder.publishingIndex === index}
                           className="ml-auto flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[12px] font-medium text-foreground disabled:opacity-50"
