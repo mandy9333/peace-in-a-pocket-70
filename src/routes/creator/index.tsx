@@ -9,7 +9,7 @@ export const Route = createFileRoute("/creator/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Creator sign-in — Stillpoint" },
+      { title: "Creator sign-in — Meditation on the Go" },
       {
         name: "description",
         content: "Creator entrance. Members sign in elsewhere.",

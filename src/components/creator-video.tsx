@@ -20,7 +20,7 @@ import creatorVideoPoster from "@/assets/mandys-creator-message-poster.jpg.asset
 const CREATOR_KEY = cueKey("creator-message", 0);
 
 const SCRIPT =
-  "Hi, I'm Mandy. I created Stillpoint because I needed a quiet place to come back to myself, and I couldn't find one that felt simple enough to actually use every day. These sessions are short and gentle, made for real life: a morning reset, a way to let stress go, a moment of balance before bed. Every practice here is one I use myself. So I'd love for you to slow down with me for a few minutes each day. Find your still point. It's closer than you think.";
+  "Hi, I'm Mandy. I created Meditation on the Go because I needed a quiet place to come back to myself, and I couldn't find one that felt simple enough to actually use every day. These sessions are short and gentle, made for real life: a morning reset, a way to let stress go, a moment of balance before bed. Every practice here is one I use myself. So I'd love for you to slow down with me for a few minutes each day. Find your still point. It's closer than you think.";
 
 /**
  * The welcome-page creator video. When Mandy's own recording is published,
@@ -229,7 +229,7 @@ export function CreatorVideo() {
         playsInline
         preload="metadata"
         poster={creatorVideoPoster.url}
-        aria-label="A personal welcome message from Mandy, creator of Stillpoint"
+        aria-label="A personal welcome message from Mandy, creator of Meditation on the Go"
       >
         <source src={creatorVideo.url} type="video/mp4" />
         Your browser does not support video playback.

@@ -10,16 +10,16 @@ import { sendContactMessage } from "@/utils/contact.functions";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — Stillpoint" },
+      { title: "Contact — Meditation on the Go" },
       {
         name: "description",
         content:
-          "Questions about Stillpoint or your membership with Mandy's Meditation Space? Send us a message.",
+          "Questions about Meditation on the Go or your membership with Mandy's Meditation Space? Send us a message.",
       },
-      { property: "og:title", content: "Contact — Stillpoint" },
+      { property: "og:title", content: "Contact — Meditation on the Go" },
       {
         property: "og:description",
-        content: "Send a question to Mandy's Meditation Space about Stillpoint or your membership.",
+        content: "Send a question to Mandy's Meditation Space about Meditation on the Go or your membership.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -54,7 +54,7 @@ function ContactPage() {
       <main className="mx-auto max-w-2xl px-6 pt-14 pb-8">
         <h1 className="text-3xl font-semibold tracking-tight text-foreground">Contact us</h1>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Questions about Stillpoint, your membership, or billing? Send a message and Mandy's
+          Questions about Meditation on the Go, your membership, or billing? Send a message and Mandy's
           Meditation Space will get back to you at the email you provide. You can also email us
           directly at{" "}
           <a href="mailto:Mandygudeman@gmail.com" className="text-primary hover:underline">

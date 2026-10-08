@@ -9,9 +9,9 @@ import { HowItWorks } from "@/components/how-it-works";
 export const Route = createFileRoute("/_authenticated/home")({
   head: () => ({
     meta: [
-      { title: "Stillpoint — Meditation" },
+      { title: "Meditation on the Go — Meditation" },
       { name: "description", content: "Start your daily meditation practice." },
-      { property: "og:title", content: "Stillpoint — Meditation" },
+      { property: "og:title", content: "Meditation on the Go — Meditation" },
       { property: "og:description", content: "Start your daily meditation practice." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

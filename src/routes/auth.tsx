@@ -9,15 +9,15 @@ export const Route = createFileRoute("/auth")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Sign in — Stillpoint" },
+      { title: "Sign in — Meditation on the Go" },
       {
         name: "description",
-        content: "Sign in or create your Stillpoint account to start your membership.",
+        content: "Sign in or create your Meditation on the Go account to start your membership.",
       },
-      { property: "og:title", content: "Sign in — Stillpoint" },
+      { property: "og:title", content: "Sign in — Meditation on the Go" },
       {
         property: "og:description",
-        content: "Sign in or create your Stillpoint account to start your membership.",
+        content: "Sign in or create your Meditation on the Go account to start your membership.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -97,7 +97,7 @@ function AuthPage() {
     <div className="min-h-screen bg-background pb-16">
       <main className="mx-auto max-w-md px-6 pt-16">
         <Link to="/" className="text-sm text-muted-foreground hover:underline">
-          ← Stillpoint
+          ← Meditation on the Go
         </Link>
         <h1 className="mt-6 text-3xl font-semibold tracking-tight text-foreground">
           {mode === "signup" ? "Create your account" : "Welcome back"}

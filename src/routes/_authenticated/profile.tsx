@@ -6,9 +6,9 @@ import profileBg from "@/assets/profile-bg.jpg";
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({
     meta: [
-      { title: "Profile — Stillpoint" },
+      { title: "Profile — Meditation on the Go" },
       { name: "description", content: "Track your meditation practice and progress." },
-      { property: "og:title", content: "Profile — Stillpoint" },
+      { property: "og:title", content: "Profile — Meditation on the Go" },
       { property: "og:description", content: "Track your meditation practice and progress." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -56,7 +56,7 @@ function Profile() {
                 S
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-foreground">Stillpoint</h2>
+                <h2 className="text-xl font-semibold text-foreground">Meditation on the Go</h2>
                 <p className="text-sm text-muted-foreground">Daily meditator</p>
               </div>
             </div>

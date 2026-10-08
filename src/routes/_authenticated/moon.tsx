@@ -19,7 +19,7 @@ import { Moon, Mic, Play, Sparkles, CalendarDays } from "lucide-react";
 export const Route = createFileRoute("/_authenticated/moon")({
   head: () => ({
     meta: [
-      { title: "Moon Rituals & Weekly Practices — Stillpoint" },
+      { title: "Moon Rituals & Weekly Practices — Meditation on the Go" },
       {
         name: "description",
         content:

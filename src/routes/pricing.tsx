@@ -10,13 +10,13 @@ import { PaymentTestModeBanner } from "@/components/payment-test-mode-banner";
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
-      { title: "Membership & Pricing — Stillpoint" },
+      { title: "Membership & Pricing — Meditation on the Go" },
       {
         name: "description",
         content:
-          "Stillpoint membership is $2.99 per month or $19 per year, with full access to every guided meditation, weekly session and moon ritual.",
+          "Meditation on the Go membership is $2.99 per month or $19 per year, with full access to every guided meditation, weekly session and moon ritual.",
       },
-      { property: "og:title", content: "Membership & Pricing — Stillpoint" },
+      { property: "og:title", content: "Membership & Pricing — Meditation on the Go" },
       {
         property: "og:description",
         content: "Full access to every meditation for $2.99 a month or $19 a year.",
@@ -52,7 +52,7 @@ function PricingPage() {
       <PaymentTestModeBanner />
       <main className="mx-auto max-w-md px-6 pt-14">
         <Link to="/" className="text-sm text-muted-foreground hover:underline">
-          ← Stillpoint
+          ← Meditation on the Go
         </Link>
         <h1 className="mt-6 text-3xl font-semibold tracking-tight text-foreground">
           Become a member

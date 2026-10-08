@@ -18,7 +18,7 @@ import {
 export const Route = createFileRoute("/creator/dashboard")({
   ssr: false,
   head: () => ({
-    meta: [{ title: "Creator Studio — Stillpoint" }],
+    meta: [{ title: "Creator Studio — Meditation on the Go" }],
   }),
   component: CreatorDashboard,
 });

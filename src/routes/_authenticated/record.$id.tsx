@@ -21,7 +21,7 @@ export const Route = createFileRoute("/_authenticated/record/$id")({
     const session = getSessionById(params.id)!;
     return {
       meta: [
-        { title: `Record your voice — ${session.title} | Stillpoint` },
+        { title: `Record your voice — ${session.title} | Meditation on the Go` },
         {
           name: "description",
           content: `Record your own voice guidance for ${session.title}. Clips stay on your device.`,
