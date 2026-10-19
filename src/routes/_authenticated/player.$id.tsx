@@ -23,9 +23,9 @@ export const Route = createFileRoute("/_authenticated/player/$id")({
     const session = getSessionById(params.id)!;
     return {
       meta: [
-        { title: `${session.title} — Stillpoint` },
+        { title: `${session.title} — Meditation on the Go` },
         { name: "description", content: session.description },
-        { property: "og:title", content: `${session.title} — Stillpoint` },
+        { property: "og:title", content: `${session.title} — Meditation on the Go` },
         { property: "og:description", content: session.description },
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary" },

@@ -29,12 +29,12 @@ import { CreditCard, LogOut, ExternalLink, Trash2, RefreshCw } from "lucide-reac
 export const Route = createFileRoute("/_authenticated/account")({
   head: () => ({
     meta: [
-      { title: "Your membership — Stillpoint" },
-      { name: "description", content: "Manage your Stillpoint membership and payment details." },
-      { property: "og:title", content: "Your membership — Stillpoint" },
+      { title: "Your membership — Meditation on the Go" },
+      { name: "description", content: "Manage your Meditation on the Go membership and payment details." },
+      { property: "og:title", content: "Your membership — Meditation on the Go" },
       {
         property: "og:description",
-        content: "Manage your Stillpoint membership and payment details.",
+        content: "Manage your Meditation on the Go membership and payment details.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

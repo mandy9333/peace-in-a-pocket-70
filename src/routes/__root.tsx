@@ -80,10 +80,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Stillpoint — Meditation" },
+      { title: "Meditation on the Go — Meditation" },
       { name: "description", content: "A calm space for daily meditation practice." },
-      { name: "author", content: "Stillpoint" },
-      { property: "og:title", content: "Stillpoint — Meditation" },
+      { name: "author", content: "Meditation on the Go" },
+      { property: "og:title", content: "Meditation on the Go — Meditation" },
       { property: "og:description", content: "A calm space for daily meditation practice." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

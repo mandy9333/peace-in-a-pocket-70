@@ -6,10 +6,10 @@ export const Route = createFileRoute("/auth/callback")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Completing sign in — Stillpoint" },
-      { name: "description", content: "Completing your secure Stillpoint sign in." },
-      { property: "og:title", content: "Completing sign in — Stillpoint" },
-      { property: "og:description", content: "Completing your secure Stillpoint sign in." },
+      { title: "Completing sign in — Meditation on the Go" },
+      { name: "description", content: "Completing your secure Meditation on the Go sign in." },
+      { property: "og:title", content: "Completing sign in — Meditation on the Go" },
+      { property: "og:description", content: "Completing your secure Meditation on the Go sign in." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

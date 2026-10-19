@@ -4,13 +4,13 @@ import { SiteFooter } from "@/components/site-footer";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Privacy Notice — Stillpoint" },
+      { title: "Privacy Notice — Meditation on the Go" },
       {
         name: "description",
         content:
-          "How Mandy's Meditation Space collects, uses and protects personal data in Stillpoint.",
+          "How Mandy's Meditation Space collects, uses and protects personal data in Meditation on the Go.",
       },
-      { property: "og:title", content: "Privacy Notice — Stillpoint" },
+      { property: "og:title", content: "Privacy Notice — Meditation on the Go" },
       {
         property: "og:description",
         content: "How we collect, use and protect your personal data.",
@@ -27,7 +27,7 @@ function PrivacyPage() {
     <div className="min-h-screen bg-background">
       <main className="mx-auto max-w-2xl px-6 pt-14 pb-8">
         <Link to="/" className="text-sm text-muted-foreground hover:underline">
-          ← Stillpoint
+          ← Meditation on the Go
         </Link>
         <h1 className="mt-6 text-3xl font-semibold tracking-tight text-foreground">
           Privacy Notice
@@ -38,7 +38,7 @@ function PrivacyPage() {
           <section>
             <h2 className="text-base font-semibold text-foreground">Who we are</h2>
             <p className="mt-2">
-              Stillpoint is operated by Mandy's Meditation Space, which is the data controller for
+              Meditation on the Go is operated by Mandy's Meditation Space, which is the data controller for
               the personal data described here. That means we decide what data is collected and
               why, and we are responsible for looking after it.
             </p>
@@ -132,7 +132,7 @@ function PrivacyPage() {
             <p className="mt-2">
               We use appropriate technical and organisational measures, including encryption in
               transit, access controls and row-level database security, to protect your data.
-              Stillpoint uses only essential cookies and local storage needed to keep you signed
+              Meditation on the Go uses only essential cookies and local storage needed to keep you signed
               in and to remember your settings; we do not use advertising cookies. You can clear
               them in your browser settings, though you will then need to sign in again.
             </p>

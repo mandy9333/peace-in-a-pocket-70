@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 const NARRATION_ID = "how-it-works";
 
 const steps = [
-  "Welcome to Stillpoint. Here is how it works.",
+  "Welcome to Meditation on the Go. Here is how it works.",
   "Pick a session from Home or the Library.",
   "Press play — the timer and breathing circle guide your pace.",
   "Adjust the soundscape and voice guidance volumes to taste.",
@@ -146,7 +146,7 @@ export function HowItWorks() {
               New here?
             </p>
             <h2 className="text-lg font-semibold text-white">
-              How Stillpoint works
+              How Meditation on the Go works
             </h2>
           </div>
         </div>
@@ -157,7 +157,7 @@ export function HowItWorks() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-5 animate-fade-in"
           role="dialog"
           aria-modal="true"
-          aria-label="How Stillpoint works"
+          aria-label="How Meditation on the Go works"
           onClick={() => {
             stopNarration();
             recorder.stopPlayback();

@@ -9,13 +9,13 @@ import { CreatorVideo } from "@/components/creator-video";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Stillpoint — A members-only meditation practice" },
+      { title: "Meditation on the Go — A members-only meditation practice" },
       {
         name: "description",
         content:
-          "Stillpoint is a calm daily meditation membership: guided sessions, a new practice each week, moon rituals and your own recorded voice. $2.99/month or $19/year.",
+          "Meditation on the Go is a calm daily meditation membership: guided sessions, a new practice each week, moon rituals and your own recorded voice. $2.99/month or $19/year.",
       },
-      { property: "og:title", content: "Stillpoint — A members-only meditation practice" },
+      { property: "og:title", content: "Meditation on the Go — A members-only meditation practice" },
       {
         property: "og:description",
         content:
@@ -57,7 +57,7 @@ function Landing() {
           Mandy's Meditation Space
         </p>
         <h1 className="mt-4 text-4xl font-semibold leading-tight tracking-tight text-foreground">
-          Stillpoint
+          Meditation on the Go
         </h1>
         <p className="mt-3 text-lg text-muted-foreground">
           A quiet daily meditation practice — guided sessions, ambient sound and rituals that

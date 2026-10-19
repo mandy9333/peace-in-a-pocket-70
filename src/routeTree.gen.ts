@@ -24,6 +24,8 @@ import { Route as AuthenticatedMoonRouteImport } from './routes/_authenticated/m
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as ApiTtsRouteImport } from './routes/api/tts'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
+import { Route as CreatorIndexRouteImport } from './routes/creator/index'
+import { Route as CreatorDashboardRouteImport } from './routes/creator/dashboard'
 import { Route as AuthenticatedPlayerIdRouteImport } from './routes/_authenticated/player.$id'
 import { Route as AuthenticatedRecordIdRouteImport } from './routes/_authenticated/record.$id'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
@@ -102,6 +104,16 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   path: '/callback',
   getParentRoute: () => AuthRoute,
 } as any)
+const CreatorIndexRoute = CreatorIndexRouteImport.update({
+  id: '/creator/',
+  path: '/creator/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreatorDashboardRoute = CreatorDashboardRouteImport.update({
+  id: '/creator/dashboard',
+  path: '/creator/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedPlayerIdRoute = AuthenticatedPlayerIdRouteImport.update({
   id: '/player/$id',
   path: '/player/$id',
@@ -134,6 +146,8 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthenticatedProfileRoute
   '/api/tts': typeof ApiTtsRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/creator/dashboard': typeof CreatorDashboardRoute
+  '/creator/': typeof CreatorIndexRoute
   '/player/$id': typeof AuthenticatedPlayerIdRoute
   '/record/$id': typeof AuthenticatedRecordIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -153,6 +167,8 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRoute
   '/api/tts': typeof ApiTtsRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/creator/dashboard': typeof CreatorDashboardRoute
+  '/creator': typeof CreatorIndexRoute
   '/player/$id': typeof AuthenticatedPlayerIdRoute
   '/record/$id': typeof AuthenticatedRecordIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -174,6 +190,8 @@ export interface FileRoutesById {
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/api/tts': typeof ApiTtsRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/creator/dashboard': typeof CreatorDashboardRoute
+  '/creator/': typeof CreatorIndexRoute
   '/_authenticated/player/$id': typeof AuthenticatedPlayerIdRoute
   '/_authenticated/record/$id': typeof AuthenticatedRecordIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -195,6 +213,8 @@ export interface FileRouteTypes {
     | '/profile'
     | '/api/tts'
     | '/auth/callback'
+    | '/creator/dashboard'
+    | '/creator/'
     | '/player/$id'
     | '/record/$id'
     | '/api/public/payments/webhook'
@@ -214,6 +234,8 @@ export interface FileRouteTypes {
     | '/profile'
     | '/api/tts'
     | '/auth/callback'
+    | '/creator/dashboard'
+    | '/creator'
     | '/player/$id'
     | '/record/$id'
     | '/api/public/payments/webhook'
@@ -234,6 +256,8 @@ export interface FileRouteTypes {
     | '/_authenticated/profile'
     | '/api/tts'
     | '/auth/callback'
+    | '/creator/dashboard'
+    | '/creator/'
     | '/_authenticated/player/$id'
     | '/_authenticated/record/$id'
     | '/api/public/payments/webhook'
@@ -249,6 +273,8 @@ export interface RootRouteChildren {
   RefundsRoute: typeof RefundsRoute
   TermsRoute: typeof TermsRoute
   ApiTtsRoute: typeof ApiTtsRoute
+  CreatorDashboardRoute: typeof CreatorDashboardRoute
+  CreatorIndexRoute: typeof CreatorIndexRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
@@ -359,6 +385,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/creator/': {
+      id: '/creator/'
+      path: '/creator'
+      fullPath: '/creator/'
+      preLoaderRoute: typeof CreatorIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/creator/dashboard': {
+      id: '/creator/dashboard'
+      path: '/creator/dashboard'
+      fullPath: '/creator/dashboard'
+      preLoaderRoute: typeof CreatorDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/player/$id': {
       id: '/_authenticated/player/$id'
       path: '/player/$id'
@@ -426,6 +466,8 @@ const rootRouteChildren: RootRouteChildren = {
   RefundsRoute: RefundsRoute,
   TermsRoute: TermsRoute,
   ApiTtsRoute: ApiTtsRoute,
+  CreatorDashboardRoute: CreatorDashboardRoute,
+  CreatorIndexRoute: CreatorIndexRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport

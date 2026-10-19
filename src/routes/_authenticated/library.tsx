@@ -13,9 +13,9 @@ import { Clock, Moon, Sparkles } from "lucide-react";
 export const Route = createFileRoute("/_authenticated/library")({
   head: () => ({
     meta: [
-      { title: "Library — Stillpoint" },
+      { title: "Library — Meditation on the Go" },
       { name: "description", content: "Browse guided meditation sessions." },
-      { property: "og:title", content: "Library — Stillpoint" },
+      { property: "og:title", content: "Library — Meditation on the Go" },
       { property: "og:description", content: "Browse guided meditation sessions." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

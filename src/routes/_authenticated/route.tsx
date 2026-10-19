@@ -63,7 +63,7 @@ function MemberArea() {
             Membership required
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Stillpoint is a members-only practice. Choose a plan to unlock every session,
+            Meditation on the Go is a members-only practice. Choose a plan to unlock every session,
             weekly practice and moon ritual.
           </p>
           <Link
